@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Book {
@@ -12,6 +13,8 @@ public class Book {
 	private Integer id;
 	private String isbn;
 	private String title;
+	@ManyToOne
+	private Genre genre;
 	
 	public Book() {
 
@@ -26,6 +29,12 @@ public class Book {
 		super();
 		this.isbn = isbn;
 		this.title = title;
+	}
+	public Book(String isbn, String title, Genre genre) {
+		super();
+		this.isbn = isbn;
+		this.title = title;
+		this.genre = genre;
 	}
 
 	public Integer getId() {
@@ -51,6 +60,16 @@ public class Book {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+	
+	
 	
 	
 }
