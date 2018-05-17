@@ -26,6 +26,7 @@ import liber_application.data.BookRepository;
 import liber_application.data.GenreRepository;
 import liber_application.model.Book;
 import liber_application.model.Genre;
+import liber_application.model.Location;
 import liber_application.model.User;
 import liber_application.object_representation.BookRepresentation;
 
@@ -125,11 +126,23 @@ public class BookController {
 	 * @return
 	 */
 	@PostMapping(path="/add2")
-	public String addNewBook (@Valid @RequestBody BookRepresentation bookRepresentation) {
+	public Book addNewBook (@Valid @RequestBody BookRepresentation bookRepresentation) {
 		
+		Book book = new Book();
 		
-				
-		return "test";
+		if(bookRepresentation.getGenre()!=null) {
+			book.setGenre(new Genre(bookRepresentation.getGenre()));
+		}
+		
+		if(bookRepresentation.getLocation()!=null) {
+			book.setLocation(new Location(bookRepresentation.getLocation()));
+		}
+		
+		book.setTitle(bookRepresentation.getTitle());
+		
+		book.setIsbn(bookRepresentation.getIsbn());
+		
+		return book;
 	}
 	
 }
