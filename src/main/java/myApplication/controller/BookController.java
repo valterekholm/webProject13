@@ -22,7 +22,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import myApplication.data.BookRepository;
+import myApplication.data.GenreRepository;
 import myApplication.model.Book;
+import myApplication.model.Genre;
 import myApplication.model.User;
 
 @RestController
@@ -31,6 +33,8 @@ public class BookController {
 	
 	@Autowired
 	private BookRepository bookRepo;
+	@Autowired
+	private GenreRepository genreRepo;
 	
 	/**
 	 * Method for JSON repr. of all books in database
@@ -95,6 +99,35 @@ public class BookController {
 	public String addNewBookObject (@RequestBody Book book) {
 		// @ResponseBody means the returned String is the response, not a view name
 		// @RequestParam means it is a parameter from the GET or POST request
+		
+		if(book.getGenre()!=null) {
+			
+			Genre bGenre = book.getGenre();
+
+			Iterable<Genre> allGenres = genreRepo.findAll();
+			boolean foundGenre = false;
+			
+			if(bGenre.getId()!=null)
+			for(Genre g : allGenres) {//If id exists
+				if(g.getId() == bGenre.getId()) {
+					foundGenre = true;
+					bGenre = g;
+				}
+			}
+			
+			for(Genre g : allGenres) {//But if name exists, that overrides previous check-match
+				if(g.getName().equalsIgnoreCase(bGenre.getName())) {
+					System.out.println("Hittade sparat namn");
+					foundGenre = true;
+					//bGenre = g;
+					bGenre.setId(g.getId());
+				}
+			}
+			
+			if(!foundGenre) {
+				return "genre not found, nothing saved";
+			}
+		}
 		
 		bookRepo.save(book);
 		return "Saved";
