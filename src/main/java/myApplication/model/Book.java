@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 public class Book {
@@ -15,6 +17,9 @@ public class Book {
 	private String title;
 	@ManyToOne
 	private Genre genre;
+	
+	@ManyToOne
+	private Location location;
 	
 	public Book() {
 
@@ -35,6 +40,14 @@ public class Book {
 		this.isbn = isbn;
 		this.title = title;
 		this.genre = genre;
+	}
+	
+	public Book(String isbn, String title, Genre genre, Location location) {
+		super();
+		this.isbn = isbn;
+		this.title = title;
+		this.genre = genre;
+		this.location = location;
 	}
 
 	public Integer getId() {
@@ -68,8 +81,13 @@ public class Book {
 	public void setGenre(Genre genre) {
 		this.genre = genre;
 	}
-	
-	
-	
-	
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+		
 }

@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Bean;
 
 import myApplication.data.BookRepository;
 import myApplication.data.GenreRepository;
+import myApplication.data.LocationRepository;
 import myApplication.model.Book;
 import myApplication.model.Genre;
+import myApplication.model.Location;
 
 @SpringBootApplication
 public class Application {
@@ -18,6 +20,8 @@ public class Application {
 	BookRepository bookRepo;
 	@Autowired
 	GenreRepository gennreRepo;
+	@Autowired
+	LocationRepository locationRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -32,16 +36,16 @@ public class Application {
     	
     	Genre genre1 = new Genre("Låtsasböcker");
     	
+    	Location shelf1 = new Location("A1", "På hylla A1");
+    	
     	return (args)->{
     		gennreRepo.save(genre1);
+    		locationRepo.save(shelf1);
     		
         	a.setGenre(genre1);
-        	b.setGenre(genre1);
-        	c.setGenre(genre1);
+        	a.setLocation(shelf1);
         	
     		bookRepo.save(a);
-    		bookRepo.save(b);
-    		bookRepo.save(c);
     	};
     }
 }
