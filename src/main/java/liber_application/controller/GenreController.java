@@ -2,7 +2,6 @@ package liber_application.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,21 +56,36 @@ public class GenreController {
 	}
 	
 	@PostMapping(path="/add")
-	public ResponseEntity<Genre> addGenreREST(@Valid @RequestBody String name){
+	public ResponseEntity<Genre> addGenreREST(@RequestBody String name){
 		
 		if(genreRepo.getByName(name)!=null) {
-			return new ResponseEntity<Genre>(HttpStatus.ALREADY_REPORTED);
+			return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
 		}
 		else {
 			Genre newGenre = genreRepo.save(new Genre(name));
-			return new ResponseEntity<Genre>(newGenre,HttpStatus.CREATED);
+			return new ResponseEntity<>(newGenre,HttpStatus.CREATED);
 		}
 	}
 	
+	/**
+	 * Delete a genre post by name
+	 * @param name
+	 * @return
+	 */
 	@PostMapping(path="/delete/{name}")
 	public ResponseEntity<Genre> deleteGenre(@PathVariable String name) {
+		if(genreRepo.getByName(name)==null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
 		genreRepo.delete(new Genre(name));
-		return new ResponseEntity<Genre>(HttpStatus.OK);
+		
+		if(genreRepo.getByName(name)==null) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
 
