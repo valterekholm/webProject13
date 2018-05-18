@@ -1,20 +1,35 @@
 package liber_application.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.springframework.core.style.ToStringCreator;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-
+    
     private String name;
-
+    
+    @Column(unique=true)
     private String email;
-
+    
+    public User() {}
+    
+    public User(String name) {
+    	this.name = name;
+    }
+    
+    public User(String name, String email) {
+    	this.name = name;
+    	this.email = email;
+    }
+    
 	public Integer getId() {
 		return id;
 	}
@@ -39,6 +54,9 @@ public class User {
 		this.email = email;
 	}
     
+	public String toString() {
+		return "User id:" + id + ", name:" + name + ", email:" + email;
+	}
     
 }
 

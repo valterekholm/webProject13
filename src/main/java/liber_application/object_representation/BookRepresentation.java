@@ -1,10 +1,12 @@
 package liber_application.object_representation;
 
+
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import liber_application.model.Book;
 import liber_application.model.Genre;
 import liber_application.model.Location;
 
@@ -63,6 +65,17 @@ public class BookRepresentation {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+	
+	
+	public Book makeBookObject() {
+		Book b = new Book(isbn,title,new Genre(genre),new Location(location));
+		return b;
+	}
+	
+	
+	public String toString() {
+		return "BookRepr. title:"+getTitle()+",isbn:"+getIsbn()+",genre:"+getGenre()+",location:"+getLocation();
 	}
 		
 }

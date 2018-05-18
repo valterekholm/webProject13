@@ -12,9 +12,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,43 +48,36 @@ public class BookController {
 	@Autowired
 	private LocationRepository locationRepo;
 	
+
 	/**
-	 * Method for JSON repr. of all books in database
-	 * @return
-	 */
-	@GetMapping(path="/all")
-	public Iterable<Book> getAllBooks() {
-		// This returns a JSON or XML with the books
-		return bookRepo.findAll();
-	}
-	/**
+	 * Called with GET /books
 	 * Method aimed for XML (or Json) format
 	 * @return - a BookCollection that wraps all books
 	 */
-	@GetMapping(path="/allXML")
+	@GetMapping
 	public BookCollection getBooksCollection() {
 		// This returns a JSON or XML with the books
 		return new BookCollection((List<Book>) bookRepo.findAll());
 	}
 	
 	
-	/**
-	 * 
-	 * @param isbn
-	 * @param title
-	 * @return
-	 */
-	@GetMapping(path="/add") // Map ONLY GET Requests
-	public String addNewBook (@RequestParam String isbn, @RequestParam(required = false) String title) { //@RequestParam(value = "someParameter", required = true)
-		// @ResponseBody means the returned String is the response, not a view name
-		// @RequestParam means it is a parameter from the GET or POST request
-		
-		Book b = new Book();
-		b.setIsbn(isbn);
-		b.setTitle(title);
-		bookRepo.save(b);
-		return "Saved";
-	}
+//	/**
+//	 * 
+//	 * @param isbn
+//	 * @param title
+//	 * @return
+//	 */
+//	@GetMapping(path="/add") // Map ONLY GET Requests
+//	public String addNewBook (@RequestParam String isbn, @RequestParam(required = false) String title) { //@RequestParam(value = "someParameter", required = true)
+//		// @ResponseBody means the returned String is the response, not a view name
+//		// @RequestParam means it is a parameter from the GET or POST request
+//		
+//		Book b = new Book();
+//		b.setIsbn(isbn);
+//		b.setTitle(title);
+//		bookRepo.save(b);
+//		return "Saved";
+//	} //not restfull
 
 //	/**
 //	 * For adding book with existing genre (genre id and/or name)
@@ -128,11 +123,12 @@ public class BookController {
 //	} //outcomm 18/5 -18 after removing integer id from Genre
 	
 	/**
-	 * 
+	 * Called with POST /users
+	 * 	and body of JSON {"title": "abc", "isbn":"123", "genre":"abc", "location":"abc"}
 	 * @param book
 	 * @return
 	 */
-	@PostMapping(path="/add")
+	@PostMapping
 	public ResponseEntity<Book> addNewBook (@Valid @RequestBody BookRepresentation bookRepresentation) {
 		
 		Book book = new Book();
@@ -155,8 +151,7 @@ public class BookController {
 		}
 		
 		if(bookRepresentation.getLocation()!=null) {
-			//book.setLocation(new Location(bookRepresentation.getLocation()));
-			
+
 			String location = bookRepresentation.getLocation();
 			if(locationRepo.getByName(location)!=null) {
 				book.setLocation(locationRepo.getByName(location));
@@ -173,7 +168,6 @@ public class BookController {
 		}
 		
 		book.setTitle(bookRepresentation.getTitle());
-		
 		book.setIsbn(bookRepresentation.getIsbn());
 		
 		book = bookRepo.save(book);
@@ -182,27 +176,46 @@ public class BookController {
 	}
 	
 	/**
+	 * Update a book
+	 * Called with PUT /books/1
+	 * 	with a body of REST {"isbn":"123d","title":"abc","genre":"abc","location":"abc"}
+	 * 	Notice: an empty field will overwrite previous data
+	 * @param id
+	 * @param book
+	 * @return
+	 */
+	@PutMapping(path="/{id}")
+	public ResponseEntity<Book> updateBook(@PathVariable Integer id, @RequestBody BookRepresentation book){
+		//Updates the user found on id of passed user-object
+		System.out.println("updateBook med " + book);
+		
+		
+		if (bookRepo.findById(id) == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		Book newBook = book.makeBookObject();
+		newBook.setId(id);
+		System.out.println("updateBook med " + newBook);
+		newBook = bookRepo.save(newBook);
+		return new ResponseEntity<>(newBook, HttpStatus.ACCEPTED);
+	}
+	
+	/**
 	 * Delete a book by id
+	 * Called with DELETE books/1
 	 * @param id
 	 * @return
 	 */
-	@PostMapping(path="/delete/{id}")
+	@DeleteMapping(path="/{id}")
 	public ResponseEntity<Book> deleteBook(@PathVariable Integer id) {
 		
 		if(bookRepo.findById(id)==null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
 		bookRepo.deleteById(id);
-		
 		return new ResponseEntity<>(HttpStatus.OK);
 		
-//		if(bookRepo.findById(id)==null) {
-//			return new ResponseEntity<>(HttpStatus.OK);
-//		}
-//		else {
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		} //commentet after getting INTERNAL_SERVER_ERROR after delete
 	}
 }
 /**

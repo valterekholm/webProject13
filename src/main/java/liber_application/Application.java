@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Bean;
 import liber_application.data.BookRepository;
 import liber_application.data.GenreRepository;
 import liber_application.data.LocationRepository;
+import liber_application.data.UserRepository;
 import liber_application.model.Book;
 import liber_application.model.Genre;
 import liber_application.model.Location;
+import liber_application.model.User;
 
 @SpringBootApplication
 public class Application {
@@ -19,7 +21,9 @@ public class Application {
 	@Autowired
 	BookRepository bookRepo;
 	@Autowired
-	GenreRepository gennreRepo;
+	UserRepository userRepo;
+	@Autowired
+	GenreRepository genreRepo;
 	@Autowired
 	LocationRepository locationRepo;
 
@@ -39,15 +43,19 @@ public class Application {
     	
     	Location shelf1 = new Location("A1", "Hylla A1");
     	
+    	User u1 = new User("Valter");
+    	
     	return (args)->{
-    		gennreRepo.save(genre1);
-    		gennreRepo.save(genre2);
+    		genreRepo.save(genre1);
+    		genreRepo.save(genre2);
     		locationRepo.save(shelf1);
     		
         	a.setGenre(genre1);
         	a.setLocation(shelf1);
         	
     		bookRepo.save(a);
+    		
+    		userRepo.save(u1);
     	};
     }
 }

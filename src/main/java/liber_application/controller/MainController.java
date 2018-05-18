@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import liber_application.UserRepository;
+import liber_application.data.UserRepository;
 import liber_application.model.User;
 
 @Controller    // This means that this class is a Controller
