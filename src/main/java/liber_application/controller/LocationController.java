@@ -7,9 +7,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,23 +29,23 @@ public class LocationController {
 	@Autowired
 	private LocationRepository locationRepo;
 	
-	@GetMapping(path="/all")
-	public Iterable<Location> getAllLocations() {
-		// This returns a JSON or XML with the locations
-		return locationRepo.findAll();
-	}
+//	@GetMapping
+//	public Iterable<Location> getAllLocations() {
+//		// This returns a JSON or XML with the locations
+//		return locationRepo.findAll();
+//	}
 	
 	/**
 	 * Used to get a well-formatted collection of all locations i database
 	 * @return
 	 */
-	@GetMapping(path="/allXML")
+	@GetMapping
 	public LocationCollection getLocationsCollection() {
 		// This returns a JSON or XML with the locations
 		return new LocationCollection((List<Location>) locationRepo.findAll());
 	}
 	
-	@PostMapping(path="/add/{name}")
+	@PostMapping(path="/{name}")
 	public String addLocation(@PathVariable String name) {
 		if(locationRepo.getByName(name)==null) {
 			locationRepo.save(new Location(name));
@@ -55,7 +57,7 @@ public class LocationController {
 		
 	}
 	
-	@PostMapping(path="/add")
+	@PostMapping
 	public ResponseEntity<Location> addLocationREST(@RequestBody String name){
 		
 		if(locationRepo.getByName(name)!=null) {
@@ -67,12 +69,20 @@ public class LocationController {
 		}
 	}
 	
+	@PutMapping(path="/{name}")
+	public ResponseEntity<Location> updateLocation(@PathVariable String oldName, String newName){
+		
+		Location l = locationRepo.getByName(oldName);
+		
+		return new ResponseEntity<Location>(HttpStatus.SERVICE_UNAVAILABLE);
+	}
+	
 	/**
 	 * Delete a location post, by name
 	 * @param name
 	 * @return
 	 */
-	@PostMapping(path="/delete/{name}")
+	@DeleteMapping(path="/{name}")
 	public ResponseEntity<Location> deleteLocation(@PathVariable String name) {
 		if(locationRepo.getByName(name)==null) {
 			System.out.println("deleteLocation, " + name + " not found");
