@@ -8,6 +8,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +27,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import liber_application.data.BookRepository;
 import liber_application.data.GenreRepository;
+import liber_application.data.LocationRepository;
 import liber_application.model.Book;
 import liber_application.model.Genre;
 import liber_application.model.Location;
@@ -38,6 +42,8 @@ public class BookController {
 	private BookRepository bookRepo;
 	@Autowired
 	private GenreRepository genreRepo;
+	@Autowired
+	private LocationRepository locationRepo;
 	
 	/**
 	 * Method for JSON repr. of all books in database
@@ -49,7 +55,7 @@ public class BookController {
 		return bookRepo.findAll();
 	}
 	/**
-	 * Method aimed for XML format
+	 * Method aimed for XML (or Json) format
 	 * @return - a BookCollection that wraps all books
 	 */
 	@GetMapping(path="/allXML")
@@ -77,74 +83,102 @@ public class BookController {
 		return "Saved";
 	}
 
-	/**
-	 * 
-	 * @param book - Book object, JSON {"isbn":"1996679", "title":"My story", "genre":{"id":1}}} or {"isbn":"1996677", "title":"My story"}
-	 * @return
-	 */
-	@PostMapping(path="/add")
-	public String addNewBookObject (@Valid @RequestBody Book book) {
-		// @ResponseBody means the returned String is the response, not a view name
-		// @RequestParam means it is a parameter from the GET or POST request
-		
-		if(book.getGenre()!=null) {
-			
-			Genre bGenre = book.getGenre();
-
-			Iterable<Genre> allGenres = genreRepo.findAll();
-			boolean foundGenre = false;
-			
-			if(bGenre.getId()!=null)
-			for(Genre g : allGenres) {//If id exists
-				if(g.getId() == bGenre.getId()) {
-					foundGenre = true;
-					bGenre = g;
-				}
-			}
-			
-			for(Genre g : allGenres) {//But if name exists, that overrides previous check-match
-				if(g.getName().equalsIgnoreCase(bGenre.getName())) {
-					System.out.println("Hittade sparat namn");
-					foundGenre = true;
-					//bGenre = g; // fungerar ej
-					bGenre.setId(g.getId());
-				}
-			}
-			
-			if(!foundGenre) {
-				return "genre not found, nothing saved";
-			}
-		}
-		
-		bookRepo.save(book);
-		return "Saved";
-	}
+//	/**
+//	 * For adding book with existing genre (genre id and/or name)
+//	 * @param book - Book object, JSON {"isbn":"1996679", "title":"My story", "genre":{"id":1}}} or {"isbn":"1996677", "title":"My story"}
+//	 * @return
+//	 */
+//	@PostMapping(path="/add")
+//	public String addNewBookObject (@Valid @RequestBody Book book) {
+//		// @ResponseBody means the returned String is the response, not a view name
+//		// @RequestParam means it is a parameter from the GET or POST request
+//		
+//		if(book.getGenre()!=null) {
+//			
+//			Genre bGenre = book.getGenre();
+//
+//			Iterable<Genre> allGenres = genreRepo.findAll();
+//			boolean foundGenre = false;
+//			
+//			if(bGenre.getId()!=null)
+//			for(Genre g : allGenres) {//If id exists
+//				if(g.getId() == bGenre.getId()) {
+//					foundGenre = true;
+//					bGenre = g;
+//				}
+//			}
+//			
+//			for(Genre g : allGenres) {//But if name exists, that overrides previous check-match
+//				if(g.getName().equalsIgnoreCase(bGenre.getName())) {
+//					System.out.println("Hittade sparat namn");
+//					foundGenre = true;
+//					//bGenre = g; // fungerar ej
+//					bGenre.setId(g.getId());
+//				}
+//			}
+//			
+//			if(!foundGenre) {
+//				return "genre not found, nothing saved";
+//			}
+//		}
+//		
+//		bookRepo.save(book);
+//		return "Saved";
+//	} //outcomm 18/5 -18 after removing integer id from Genre
 	
 	/**
 	 * 
 	 * @param book
 	 * @return
 	 */
-	@PostMapping(path="/add2")
-	public Book addNewBook (@Valid @RequestBody BookRepresentation bookRepresentation) {
+	@PostMapping(path="/add")
+	public ResponseEntity<Book> addNewBook (@Valid @RequestBody BookRepresentation bookRepresentation) {
 		
 		Book book = new Book();
+		HttpHeaders responseHeaders = new HttpHeaders();
+		boolean accepted = true;
 		
 		if(bookRepresentation.getGenre()!=null) {
-			book.setGenre(new Genre(bookRepresentation.getGenre()));
+			String genre = bookRepresentation.getGenre();
+			//book.setGenre(new Genre(bookRepresentation.getGenre()));
+			//load from database
+			if(genreRepo.getByName(genre)!=null) {
+				//Genre Exists
+				book.setGenre(genreRepo.getByName(genre));
+			}
+			else {
+				accepted = false;
+				responseHeaders.add("Genre not found", genre);
+				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+			}
 		}
 		
 		if(bookRepresentation.getLocation()!=null) {
-			book.setLocation(new Location(bookRepresentation.getLocation()));
+			//book.setLocation(new Location(bookRepresentation.getLocation()));
+			
+			String location = bookRepresentation.getLocation();
+			if(locationRepo.getByName(location)!=null) {
+				book.setLocation(locationRepo.getByName(location));
+			}
+			else {
+				accepted = false;
+				responseHeaders.add("Location not found", location);
+				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
+		
+		if(!accepted) {
+			return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_ACCEPTABLE);
 		}
 		
 		book.setTitle(bookRepresentation.getTitle());
 		
 		book.setIsbn(bookRepresentation.getIsbn());
 		
-		return book;
+		book = bookRepo.save(book);
+		
+		return new ResponseEntity<Book>(book, HttpStatus.CREATED);
 	}
-	
 }
 /**
  * A class used for XML data of a collection of books

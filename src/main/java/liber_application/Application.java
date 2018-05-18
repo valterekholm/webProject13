@@ -35,11 +35,13 @@ public class Application {
     	Book c = new Book("1234569","En icke-bok");
     	
     	Genre genre1 = new Genre("Låtsasböcker");
+    	Genre genre2 = new Genre("IT");
     	
     	Location shelf1 = new Location("A1", "Hylla A1");
     	
     	return (args)->{
     		gennreRepo.save(genre1);
+    		gennreRepo.save(genre2);
     		locationRepo.save(shelf1);
     		
         	a.setGenre(genre1);

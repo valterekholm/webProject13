@@ -8,8 +8,8 @@ import javax.persistence.Id;
 @Entity
 public class Genre {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+//	@GeneratedValue(strategy=GenerationType.AUTO)
+//	private Integer id;
 	private String name;
 	
 	public Genre() {}
@@ -20,12 +20,12 @@ public class Genre {
 	}
 	
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+//	public Integer getId() {
+//		return id;
+//	}
+//	public void setId(Integer id) {
+//		this.id = id;
+//	}
 	public String getName() {
 		return name;
 	}

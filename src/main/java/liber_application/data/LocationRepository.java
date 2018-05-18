@@ -5,5 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import liber_application.model.Location;
 
 public interface LocationRepository extends CrudRepository<Location, Integer>{
+	
+	public Location getByName(String name);
 
 }
