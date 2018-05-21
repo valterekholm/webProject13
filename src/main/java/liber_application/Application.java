@@ -6,11 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import liber_application.data.BookLoanRepository;
 import liber_application.data.BookRepository;
 import liber_application.data.GenreRepository;
 import liber_application.data.LocationRepository;
 import liber_application.data.UserRepository;
 import liber_application.model.Book;
+import liber_application.model.BookLoan;
 import liber_application.model.Genre;
 import liber_application.model.Location;
 import liber_application.model.User;
@@ -26,6 +28,8 @@ public class Application {
 	GenreRepository genreRepo;
 	@Autowired
 	LocationRepository locationRepo;
+	@Autowired
+	BookLoanRepository loanRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -45,6 +49,8 @@ public class Application {
     	
     	User u1 = new User("Valter");
     	
+    	BookLoan loan1 = new BookLoan(u1, a);
+    	
     	return (args)->{
     		genreRepo.save(genre1);
     		genreRepo.save(genre2);
@@ -56,6 +62,8 @@ public class Application {
     		bookRepo.save(a);
     		
     		userRepo.save(u1);
+    		
+    		loanRepo.save(loan1);
     	};
     }
 }
