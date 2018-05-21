@@ -36,34 +36,36 @@ public class Application {
     }
     
     @Bean
-    public CommandLineRunner init() {
-    	
-    	Book a = new Book("1234567","En låtsasbok");
-    	Book b = new Book("1234568","En fejkbok");
-    	Book c = new Book("1234569","En icke-bok");
-    	
-    	Genre genre1 = new Genre("Låtsasböcker");
-    	Genre genre2 = new Genre("IT");
-    	
-    	Location shelf1 = new Location("A1", "Hylla A1");
-    	
-    	User u1 = new User("Valter");
-    	
-    	BookLoan loan1 = new BookLoan(u1, a);
-    	
-    	return (args)->{
-    		genreRepo.save(genre1);
-    		genreRepo.save(genre2);
-    		locationRepo.save(shelf1);
-    		
-        	a.setGenre(genre1);
-        	a.setLocation(shelf1);
-        	
-    		bookRepo.save(a);
-    		
-    		userRepo.save(u1);
-    		
-    		loanRepo.save(loan1);
-    	};
+	public CommandLineRunner init() {
+
+		return (args) -> {
+
+			Book a = new Book("1234567", "En låtsasbok");
+			Book b = new Book("1234568", "En fejkbok");
+			Book c = new Book("1234569", "En icke-bok");
+
+			Genre genre1 = new Genre("Låtsasböcker");
+			Genre genre2 = new Genre("IT");
+
+			Location shelf1 = new Location("A1", "Hylla A1");
+
+			User u1 = new User("Valter");
+			
+
+
+			genreRepo.save(genre1);
+			genreRepo.save(genre2);
+			locationRepo.save(shelf1);
+
+			a.setGenre(genre1);
+			a.setLocation(shelf1);
+			
+			a = bookRepo.save(a);
+			u1 = userRepo.save(u1);
+			
+			BookLoan loan1 = new BookLoan(u1, a);
+			loanRepo.save(loan1);
+			System.out.println(loan1);
+		};
     }
 }

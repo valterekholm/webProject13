@@ -10,7 +10,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true) //makes any wrong field sent from user ignored
 public class BookLoan {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -97,6 +101,7 @@ public class BookLoan {
 	 * Check if a loan has gone over it's allowed time (is overdue)
 	 * @return true if loan is overdue, else false
 	 */
+	@JsonIgnore
 	public boolean isOverdue() {
 		LocalDate today = LocalDate.now();
 		LocalDate dateTemp = startingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -109,4 +114,12 @@ public class BookLoan {
 			return false;
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "BookLoan [id=" + id + ", reader=" + reader + ", book=" + book + ", startingDate=" + startingDate
+				+ ", allowedWeeksLength=" + allowedWeeksLength + "]";
+	}
+	
+	
 }
