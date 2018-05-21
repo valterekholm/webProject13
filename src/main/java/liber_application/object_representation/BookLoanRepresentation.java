@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import liber_application.data.BookRepository;
 import liber_application.data.UserRepository;
 import liber_application.model.Book;
@@ -22,23 +24,35 @@ public class BookLoanRepresentation {
 	
 	Integer readerId;
 	Integer bookId;
+	
+	//@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd")
 	Date startingDate; //TODO: change to LocalDate
+	
 	Integer allowedWeeksLength;
 	
 	public BookLoanRepresentation() {
+		super();
+		System.out.println("Constructor");
 	}
 	
 	
 
 	public BookLoanRepresentation(Integer readerId, Integer bookId) {
+		System.out.println("Constructor with " + readerId + " and " + bookId);
 		this.readerId = readerId;
+		System.out.println("1");
 		this.bookId = bookId;
+		System.out.println("2");
 		startingDate = new Date();
+		System.out.println("3");
 		this.allowedWeeksLength = BookLoan.STANDARD_LOAN_PERIOD_WEEKS;
+		System.out.println(this);
 	}
 
 
 	public BookLoanRepresentation(Integer readerId, Integer bookId, Date startingDate) {
+		System.out.println("Constructor with " + readerId + ", " + bookId + " and " + startingDate);
 		this.readerId = readerId;
 		this.bookId = bookId;
 		this.startingDate = startingDate;
@@ -48,6 +62,7 @@ public class BookLoanRepresentation {
 
 
 	public BookLoanRepresentation(Integer readerId, Integer bookId, Date startingDate, Integer allowedWeeksLength) {
+		System.out.println("Constructor with " + readerId + ", " + bookId + ", " + startingDate + " and " + allowedWeeksLength);
 		this.readerId = readerId;
 		this.bookId = bookId;
 		this.startingDate = startingDate;
@@ -99,18 +114,32 @@ public class BookLoanRepresentation {
 		Optional<User> reader = userRepo.findById(getReaderId());
 		
 		if(!reader.isPresent()) {
-			throw new UserNotFoundException();
+			throw new UserNotFoundException("User not found");
+		}
+		else {
+			System.out.println("Hittade user");
 		}
 		
 		Optional<Book> book = bookRepo.findById(getBookId());
 		
 		if(!book.isPresent()) {
-			throw new BookNotFoundException();
+			throw new BookNotFoundException("Book not found");
+		}
+		else {
+			System.out.println("Book found");
 		}
 		
 		BookLoan bookLoan = new BookLoan(reader.get(), book.get(), getStartingDate(), getAllowedWeeksLength());
 		
 		return bookLoan;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "BookLoanRepresentation [readerId=" + readerId + ", bookId=" + bookId + ", startingDate=" + startingDate
+				+ ", allowedWeeksLength=" + allowedWeeksLength + "]";
 	}
 	
 	

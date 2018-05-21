@@ -3,23 +3,30 @@ package liber_application.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import liber_application.data.BookLoanRepository;
+import liber_application.data.BookRepository;
+import liber_application.data.UserRepository;
 import liber_application.model.Book;
 import liber_application.model.BookLoan;
+import liber_application.model.User;
 import liber_application.object_representation.BookLoanRepresentation;
 import liber_application.object_representation.BookNotFoundException;
 import liber_application.object_representation.UserNotFoundException;
@@ -30,6 +37,12 @@ public class BookLoanController {
 	
 	@Autowired
 	public BookLoanRepository loanRepo;
+	
+	@Autowired
+	public UserRepository userRepo;
+	
+	@Autowired
+	public BookRepository bookRepo;
 	
 	/**
 	 * Called with GET /books
@@ -53,26 +66,90 @@ public class BookLoanController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+//	/**
+//	 * Create a BookLoan and save
+//	 * Called with POST Json {"readerId":1,"bookId":1,"startingDate":"2018-01-01","allowedWeeksLength":2} or {"readerId":1,"bookId":1,"startingDate":"2018-01-01"} or {"readerId":1,"bookId":1}
+//	 * @param bookLoan
+//	 * @return
+//	 * @throws BookNotFoundException 
+//	 * @throws UserNotFoundException 
+//	 */
+//	@PostMapping
+//	public ResponseEntity<BookLoan> addBookLoan(@Valid @RequestBody BookLoanRepresentation bookLoan) throws UserNotFoundException, BookNotFoundException{
+//		
+//		System.out.println("addBookLoan med " + bookLoan);
+//		
+////		BookLoan loan;
+////		HttpHeaders responseHeaders = new HttpHeaders();
+////		
+////		try {
+////			loan = bookLoan.makeBookLoanObject();
+////		} catch (UserNotFoundException | BookNotFoundException e) {
+////			responseHeaders.add("Error", e.getMessage());
+////			return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_ACCEPTABLE);
+////		}
+////		
+////		loan = loanRepo.save(loan);
+////		return new ResponseEntity<BookLoan>(loan, HttpStatus.CREATED);
+//		
+//		
+//		BookLoan loan = new BookLoan();
+//		HttpHeaders responseHeaders = new HttpHeaders();
+//		boolean accepted = true;
+//		
+//		if(bookLoan.getReaderId()!=null) {
+//			Optional<User> user = userRepo.findById(bookLoan.getReaderId());
+//			
+//			if(!user.isPresent()) {
+//				accepted = false;
+//				responseHeaders.add("User not found", bookLoan.getReaderId().toString());
+//			}
+//		}
+//		else {
+//			accepted = false;
+//		}
+//		
+//		if(bookLoan.getBookId()!=null) {
+//			Optional<Book> book = bookRepo.findById(bookLoan.getBookId());
+//			
+//			if(!book.isPresent()) {
+//				accepted = false;
+//				responseHeaders.add("Book not found", bookLoan.getReaderId().toString());
+//			}
+//		}
+//		else {
+//			accepted = false;
+//		}
+//		
+//		if(accepted) {
+//			loan = bookLoan.makeBookLoanObject();
+//			loan = loanRepo.save(loan);
+//			return new ResponseEntity<>(loan, HttpStatus.CREATED);
+//		}
+//		else {
+//			return new ResponseEntity<>(responseHeaders, HttpStatus.BAD_REQUEST);
+//		}
+//	} //out commented 21 may 2018 due to malfunction
+	
 	/**
-	 * Create a BookLoan and save
-	 * Called with POST {"readerId":1,"bookId":1,"startingDate":"2018-01-01","allowedWeeksLength":2} or {"readerId":1,"bookId":1,"startingDate":"2018-01-01"} or {"readerId":1,"bookId":1}
+	 * Save a loan
+	 * Called with POST Json {"readerId":2,"bookId":1}
 	 * @param bookLoan
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<BookLoan> addBookLoan(BookLoanRepresentation bookLoan){
+	public String saveLoan(@RequestBody BookLoanRepresentation bookLoan) { //@RequestBody Integer userId, @RequestParam Integer bookId
+		Optional<User> user = userRepo.findById(bookLoan.getReaderId());
+		Optional<Book> book = bookRepo.findById(bookLoan.getBookId());
 		
-		BookLoan loan;
+		System.out.println("Save loan: " + bookLoan);
 		
-		try {
-			loan = bookLoan.makeBookLoanObject();
-		} catch (UserNotFoundException | BookNotFoundException e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		if(user.isPresent() && book.isPresent()) {
+			BookLoan loan = new BookLoan(user.get(), book.get(), bookLoan.getStartingDate());
+			loanRepo.save(loan);
+			return "Saved";
 		}
-		
-		loan = loanRepo.save(loan);
-		return new ResponseEntity<BookLoan>(loan, HttpStatus.CREATED);
+		return "Not saved";
 	}
 }
 
