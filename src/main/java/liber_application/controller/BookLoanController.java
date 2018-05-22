@@ -1,5 +1,6 @@
 package liber_application.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,7 +146,8 @@ public class BookLoanController {
 		System.out.println("Save loan: " + bookLoan);
 		
 		if(user.isPresent() && book.isPresent()) {
-			BookLoan loan = new BookLoan(user.get(), book.get(), bookLoan.getStartingDate());
+			Date startingDate = bookLoan.getStartingDate()==null ? new Date() : bookLoan.getStartingDate();
+			BookLoan loan = new BookLoan(user.get(), book.get(), startingDate);
 			loanRepo.save(loan);
 			return "Saved";
 		}
