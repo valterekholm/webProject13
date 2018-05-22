@@ -58,12 +58,15 @@ public class BookLoanController {
 	
 	@GetMapping(path="/isOverdue/{loanId}")
 	public ResponseEntity<Boolean> isLoanOverdue(@PathVariable Integer loanId) {
+		System.out.println("isLoanOverdue with arg " + loanId);
 		Optional<BookLoan> l = loanRepo.findById(loanId);
 		
 		if(l.isPresent()) {
+			System.out.println("Found the loan, " + loanId + ", " + l.get() + ", i-o-d: " + l.get().isOverdue());
 			return new ResponseEntity<>(l.get().isOverdue(), HttpStatus.OK);
 		}
 		else {
+			System.out.println("Didn't find loan, " + loanId);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}

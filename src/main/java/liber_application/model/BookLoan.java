@@ -103,11 +103,12 @@ public class BookLoan {
 	 */
 	@JsonIgnore
 	public boolean isOverdue() {
+		System.out.println("isOverdue");
 		LocalDate today = LocalDate.now();
 		LocalDate dateTemp = startingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		dateTemp.plusWeeks(this.allowedWeeksLength);
+		dateTemp.plusWeeks(this.allowedWeeksLength);//set dateTemp to day of expire
 		
-		if(today.isBefore(dateTemp)) {
+		if(today.isAfter(dateTemp)) {
 			return true;
 		}
 		else {
