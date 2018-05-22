@@ -49,7 +49,7 @@ public class Application {
 
 			Location shelf1 = new Location("A1", "Hylla A1");
 
-			User u1 = new User("Valter");
+			User u1 = new User("Valter","valterekholm1@gmail.com");
 			
 
 

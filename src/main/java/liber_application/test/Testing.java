@@ -75,6 +75,32 @@ public class Testing {
 		assertThat(found.isOverdue());
 	}
 	
+	@Test
+	public void testTodayDateIsNotOverdue() {
+		
+		User u = new User("Erik", "e@g.com");
+		Book b = new Book("12345", "En röd bok");
+		
+//		GregorianCalendar cal = new GregorianCalendar(2010, 3, 3); 
+//		
+//		Date startD = cal.getTime();
+		
+		BookLoan bl = new BookLoan(u, b);
+		
+		userRepo.save(u);
+		userRepo.flush();
+		
+		bookRepo.save(b);
+		bookRepo.flush();
+		
+		loanRepo.save(bl);
+		loanRepo.flush();
+		
+		BookLoan found = loanRepo.findAll().get(0);
+		
+		assertThat(!found.isOverdue());
+	}
+	
 //	@Test
 //	public void testOldDateIsOverdueC() {
 //		

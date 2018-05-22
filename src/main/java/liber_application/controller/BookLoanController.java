@@ -4,11 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -29,8 +26,8 @@ import liber_application.model.Book;
 import liber_application.model.BookLoan;
 import liber_application.model.User;
 import liber_application.object_representation.BookLoanRepresentation;
-import liber_application.object_representation.BookNotFoundException;
-import liber_application.object_representation.UserNotFoundException;
+import liber_application.object_representation.BookLoanRepresentationEmail;
+
 
 @RestController
 @RequestMapping("/loans")
@@ -137,19 +134,28 @@ public class BookLoanController {
 	
 	/**
 	 * Save a loan
-	 * Called with POST Json {"readerId":2,"bookId":1}
+	 * Called with POST Json using userId {"readerId":2,"bookId":1} or {"readerId":2,"bookId":1,"startingDate":"2010-01-01"}
+	 * Or with POST Json using userEmail {"readerEmail":"valterekholm1@gmail.com","bookId":1} or {"readerEmail":"valterekholm1@gmail.com","bookId":1,"startingDate":"2010-01-01"}
 	 * @param bookLoan
+	 * @param bookLoanEmail
 	 * @return
 	 */
 	@PostMapping
 	public String saveLoan(@RequestBody BookLoanRepresentation bookLoan) { //@RequestBody Integer userId, @RequestParam Integer bookId
-		Optional<User> user = userRepo.findById(bookLoan.getReaderId());
+		
+		Optional<User> user = bookLoan.getReaderId()!=null
+				? userRepo.findById(bookLoan.getReaderId())
+						: bookLoan.getReaderEmail()!=null
+						? userRepo.getByEmail(bookLoan.getReaderEmail())
+								: null;
+						
+						
 		Optional<Book> book = bookRepo.findById(bookLoan.getBookId());
-		
+
 		System.out.println("Save loan: " + bookLoan);
-		
-		if(user.isPresent() && book.isPresent()) {
-			Date startingDate = bookLoan.getStartingDate()==null ? new Date() : bookLoan.getStartingDate();
+
+		if (user.isPresent() && book.isPresent()) {
+			Date startingDate = bookLoan.getStartingDate() == null ? new Date() : bookLoan.getStartingDate();
 			BookLoan loan = new BookLoan(user.get(), book.get(), startingDate);
 			loanRepo.save(loan);
 			return "Saved";

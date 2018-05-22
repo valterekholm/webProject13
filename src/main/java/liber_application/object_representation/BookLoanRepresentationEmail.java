@@ -13,7 +13,8 @@ import liber_application.model.Book;
 import liber_application.model.BookLoan;
 import liber_application.model.User;
 
-public class BookLoanRepresentation {
+public class BookLoanRepresentationEmail {
+
 	
 	@Autowired
 	UserRepository userRepo;
@@ -22,8 +23,7 @@ public class BookLoanRepresentation {
 	BookRepository bookRepo;
 	
 	
-	Integer readerId;
-	String readerEmail;//Have email also to make searching etc. easy for user
+	String readerEmail;
 	Integer bookId;
 	
 	//@JsonFormat(pattern="yyyy-MM-dd")
@@ -32,16 +32,16 @@ public class BookLoanRepresentation {
 	
 	Integer allowedWeeksLength;
 	
-	public BookLoanRepresentation() {
+	public BookLoanRepresentationEmail() {
 		super();
 		System.out.println("Constructor");
 	}
 	
 	
 
-	public BookLoanRepresentation(Integer readerId, Integer bookId) {
-		System.out.println("Constructor with " + readerId + " and " + bookId);
-		this.readerId = readerId;
+	public BookLoanRepresentationEmail(String readerEmail, Integer bookId) {
+		System.out.println("Constructor with " + readerEmail + " and " + bookId);
+		this.readerEmail = readerEmail;
 		System.out.println("1");
 		this.bookId = bookId;
 		System.out.println("2");
@@ -52,9 +52,9 @@ public class BookLoanRepresentation {
 	}
 
 
-	public BookLoanRepresentation(Integer readerId, Integer bookId, Date startingDate) {
-		System.out.println("Constructor with " + readerId + ", " + bookId + " and " + startingDate);
-		this.readerId = readerId;
+	public BookLoanRepresentationEmail(String readerEmail, Integer bookId, Date startingDate) {
+		System.out.println("Constructor with " + readerEmail + ", " + bookId + " and " + startingDate);
+		this.readerEmail = readerEmail;
 		this.bookId = bookId;
 		this.startingDate = startingDate;
 		this.allowedWeeksLength = BookLoan.STANDARD_LOAN_PERIOD_WEEKS;
@@ -62,26 +62,15 @@ public class BookLoanRepresentation {
 
 
 
-	public BookLoanRepresentation(Integer readerId, Integer bookId, Date startingDate, Integer allowedWeeksLength) {
-		System.out.println("Constructor with " + readerId + ", " + bookId + ", " + startingDate + " and " + allowedWeeksLength);
-		this.readerId = readerId;
+	public BookLoanRepresentationEmail(String readerEmail, Integer bookId, Date startingDate, Integer allowedWeeksLength) {
+		System.out.println("Constructor with " + readerEmail + ", " + bookId + ", " + startingDate + " and " + allowedWeeksLength);
+		this.readerEmail = readerEmail;
 		this.bookId = bookId;
 		this.startingDate = startingDate;
 		this.allowedWeeksLength = allowedWeeksLength;
 	}
 
 
-
-	public Integer getReaderId() {
-		return readerId;
-	}
-
-
-
-	public void setReaderId(Integer readerId) {
-		this.readerId = readerId;
-	}
-	
 
 	public String getReaderEmail() {
 		return readerEmail;
@@ -123,18 +112,7 @@ public class BookLoanRepresentation {
 	
 	public BookLoan makeBookLoanObject() throws UserNotFoundException, BookNotFoundException{
 		
-		Optional<User> reader;
-		
-		//Tries to find the user/reader by it's ID, but if there is no such - then by email - and if no email throw exception
-		if(getReaderId()!=null) {
-			reader = userRepo.findById(getReaderId());
-		}
-		else if(getReaderEmail()!=null) {
-			reader = userRepo.getByEmail(getReaderEmail());
-		}
-		else {
-			throw new NullPointerException();
-		}
+		Optional<User> reader = userRepo.getByEmail(getReaderEmail());
 		
 		if(!reader.isPresent()) {
 			throw new UserNotFoundException("User not found");
@@ -159,7 +137,7 @@ public class BookLoanRepresentation {
 
 	@Override
 	public String toString() {
-		return "BookLoanRepresentation [readerId=" + readerId + ", bookId=" + bookId + ", startingDate=" + startingDate
+		return "BookLoanRepresentationEmail [readerEmail=" + readerEmail + ", bookId=" + bookId + ", startingDate=" + startingDate
 				+ ", allowedWeeksLength=" + allowedWeeksLength + "]";
 	}
 	
