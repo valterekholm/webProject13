@@ -7,11 +7,14 @@ import java.util.Optional;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +29,8 @@ import liber_application.model.Book;
 import liber_application.model.BookLoan;
 import liber_application.model.User;
 import liber_application.object_representation.BookLoanRepresentation;
-import liber_application.object_representation.BookLoanRepresentationEmail;
+import liber_application.object_representation.BookNotFoundException;
+import liber_application.object_representation.UserNotFoundException;
 
 
 @RestController
@@ -51,6 +55,30 @@ public class BookLoanController {
 	public BookLoanCollection getBookLoansCollection() {
 		// This returns a JSON or XML with the books
 		return new BookLoanCollection((List<BookLoan>) loanRepo.findAll());
+	}
+	
+	@GetMapping(path="/{id}")
+	public ResponseEntity<BookLoan> getBookLoanById(@PathVariable Integer id) {
+		Optional<BookLoan> loan = loanRepo.findById(id);
+		
+		if(loan.isPresent()) {
+			return new ResponseEntity<>(loan.get(),HttpStatus.FOUND);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping(path="/email/{email}")
+	public ResponseEntity<BookLoanCollection> getBookLoanByEmail(String email) {
+		Iterable<BookLoan> loans = loanRepo.findByReaderEmail(email);
+		
+		if(loans.iterator().hasNext()) {
+			return new ResponseEntity<>(new BookLoanCollection((List<BookLoan>)loans), HttpStatus.FOUND);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@GetMapping(path="/isOverdue/{loanId}")
@@ -162,6 +190,77 @@ public class BookLoanController {
 			return "Saved";
 		}
 		return "Not saved";
+	}
+	/**
+	 * Called with PUT /loans and Json Body {"readerId": 1, "bookId":1, "startingDate":"2011-11-11", "allowedWeeksLength":1}, see saveLoan()
+	 * @param loanId
+	 * @param loan
+	 * @return
+	 */
+	@PutMapping(path="/{id}")
+	public ResponseEntity<BookLoan> updateLoan(@PathVariable Integer id, @RequestBody BookLoanRepresentation loan){//@PathVariable Integer loanId
+		System.out.println("updateLoan med " + loan);
+		Optional<BookLoan> realLoan = loanRepo.findById(id);
+		HttpHeaders responseHeaders = new HttpHeaders();
+		
+		boolean accepted = true;
+		
+		if(!realLoan.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		System.out.println("Hittade matchande lån: " + realLoan.get());
+		
+		//Overwrite the loan data
+		
+		//Get the book
+		Optional<Book> realBook = bookRepo.findById(loan.getBookId());
+		
+		if(!realBook.isPresent()) {
+			responseHeaders.add("Book not found", loan.getBookId().toString());
+			accepted=false;
+			System.out.println("Book not found " + loan.getBookId());
+		}
+		
+		//Get the user
+		Optional<User> realUser = userRepo.getByEmail(loan.getReaderEmail());
+		if(!realUser.isPresent()) {
+			realUser = userRepo.findById(loan.getReaderId());
+		}
+
+		
+		if(!realUser.isPresent()) {
+			responseHeaders.add("User not found", "email: " + loan.getReaderEmail() + " or id: " + loan.getReaderId());
+			accepted = false;
+			System.out.println("User not found email: " + loan.getReaderEmail() + " or id: " + loan.getReaderId());
+		}
+		
+		if(!accepted) {
+			return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		realLoan.get().setBook(realBook.get());
+		realLoan.get().setReader(realUser.get());
+		realLoan.get().setStartingDate(loan.getStartingDate());
+		realLoan.get().setWeeksLength(loan.getAllowedWeeksLength());
+		
+		BookLoan saved = loanRepo.save(realLoan.get());
+				
+		return new ResponseEntity<>(saved, HttpStatus.ACCEPTED);
+	}
+	
+	/**
+	 * Called with DELETE /loans/1
+	 * @param loanId
+	 * @return
+	 */
+	@DeleteMapping(path="/{id}")
+	public ResponseEntity<BookLoan> deleteLoan(@PathVariable Integer loanId){
+		if(loanRepo.findById(loanId)==null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		loanRepo.deleteById(loanId);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
 

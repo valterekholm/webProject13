@@ -68,9 +68,9 @@ public class Testing {
 		bookRepo.flush();
 		
 		loanRepo.save(bl);
-		loanRepo.flush();
+		//loanRepo.flush();
 		
-		BookLoan found = loanRepo.findAll().get(0);
+		BookLoan found = loanRepo.findAll().iterator().next();
 		
 		assertThat(found.isOverdue());
 	}
@@ -94,9 +94,9 @@ public class Testing {
 		bookRepo.flush();
 		
 		loanRepo.save(bl);
-		loanRepo.flush();
+		//loanRepo.flush();
 		
-		BookLoan found = loanRepo.findAll().get(0);
+		BookLoan found = loanRepo.findAll().iterator().next();
 		
 		assertThat(!found.isOverdue());
 	}

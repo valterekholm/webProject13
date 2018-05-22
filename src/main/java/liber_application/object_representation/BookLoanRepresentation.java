@@ -42,13 +42,9 @@ public class BookLoanRepresentation {
 	public BookLoanRepresentation(Integer readerId, Integer bookId) {
 		System.out.println("Constructor with " + readerId + " and " + bookId);
 		this.readerId = readerId;
-		System.out.println("1");
 		this.bookId = bookId;
-		System.out.println("2");
 		startingDate = new Date();
-		System.out.println("3");
 		this.allowedWeeksLength = BookLoan.STANDARD_LOAN_PERIOD_WEEKS;
-		System.out.println(this);
 	}
 
 
@@ -122,21 +118,50 @@ public class BookLoanRepresentation {
 	}
 	
 	public BookLoan makeBookLoanObject() throws UserNotFoundException, BookNotFoundException{
-		
+		System.out.println("makeBookLoanObject");
 		Optional<User> reader;
 		
+		//if both are set
+		if(getReaderId()!=null && getReaderEmail()!=null) {
+			System.out.println("id and email set");
+			//Search by them
+			Optional<User> found = userRepo.findByIdAndEmail(getReaderId(), getReaderEmail());
+			
+			//If email and id not match
+			if(!found.isPresent()) {//not present
+				//favor email more then id
+				reader = userRepo.getByEmail(getReaderEmail());
+				
+				//Message that id/email did not match, and email choosen
+				
+				if(!reader.isPresent()) {
+					//But if email didn't work
+					reader = userRepo.findById(getReaderId());//try again
+				}
+			}
+			else {
+				reader = userRepo.findById(getReaderId());
+			}
+		}
+		
 		//Tries to find the user/reader by it's ID, but if there is no such - then by email - and if no email throw exception
-		if(getReaderId()!=null) {
+		else if(getReaderId()!=null) {
+			System.out.println("only id set");
 			reader = userRepo.findById(getReaderId());
 		}
 		else if(getReaderEmail()!=null) {
+			System.out.println("only email set");
 			reader = userRepo.getByEmail(getReaderEmail());
 		}
 		else {
+			System.out.println("neither id email set");
 			throw new NullPointerException();
 		}
 		
+		
+		
 		if(!reader.isPresent()) {
+			System.out.println("User not found");
 			throw new UserNotFoundException("User not found");
 		}
 		else {
@@ -146,21 +171,28 @@ public class BookLoanRepresentation {
 		Optional<Book> book = bookRepo.findById(getBookId());
 		
 		if(!book.isPresent()) {
+			System.out.println("Book not found");
 			throw new BookNotFoundException("Book not found");
 		}
 		else {
 			//System.out.println("Book found");
 		}
 		
+		System.out.println("To create a BookLoan with args: " + reader.get()+","+ book.get()+","+ getStartingDate()+","+ getAllowedWeeksLength());
+		
 		BookLoan bookLoan = new BookLoan(reader.get(), book.get(), getStartingDate(), getAllowedWeeksLength());
 		
 		return bookLoan;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "BookLoanRepresentation [readerId=" + readerId + ", bookId=" + bookId + ", startingDate=" + startingDate
-				+ ", allowedWeeksLength=" + allowedWeeksLength + "]";
+		return "BookLoanRepresentation [readerId=" + readerId + ", readerEmail=" + readerEmail + ", bookId=" + bookId
+				+ ", startingDate=" + startingDate + ", allowedWeeksLength=" + allowedWeeksLength + "]";
 	}
+	
+	
 	
 }

@@ -1,4 +1,4 @@
-package liber_application;
+package liber_application.web_controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -6,6 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import liber_application.IntegerAdder;
+import liber_application.IntegerPair;
 
 @Controller
 public class IntegerPairWebController {

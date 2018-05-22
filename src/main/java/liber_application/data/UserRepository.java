@@ -13,4 +13,6 @@ import liber_application.model.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 	
 	Optional<User> getByEmail(String email);
+	
+	Optional<User> findByIdAndEmail(Integer id, String email);
 }

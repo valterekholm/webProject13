@@ -54,7 +54,6 @@ public class BookLoan {
 		this.book = book;
 		this.startingDate = startingDate;
 		this.allowedWeeksLength = weeksLength;
-		
 	}
 
 	public Integer getId() {

@@ -4,7 +4,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+/**
+ * The genre entity
+ * It has no artificial key and a genre can currently not be altered once saved (?)
+ * @author User
+ *
+ */
 @Entity
 public class Genre {
 	@Id

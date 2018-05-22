@@ -5,6 +5,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * A entity for location
+ * The lack of a artificial key makes it currently impossible to alter any saved Location name (?)
+ * @author User
+ *
+ */
 @Entity
 public class Location {
 	@Id
