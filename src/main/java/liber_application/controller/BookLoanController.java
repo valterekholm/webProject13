@@ -143,11 +143,12 @@ public class BookLoanController {
 	@PostMapping
 	public String saveLoan(@RequestBody BookLoanRepresentation bookLoan) { //@RequestBody Integer userId, @RequestParam Integer bookId
 		
+		//Set user from id (if present) or email
 		Optional<User> user = bookLoan.getReaderId()!=null
 				? userRepo.findById(bookLoan.getReaderId())
 						: bookLoan.getReaderEmail()!=null
 						? userRepo.getByEmail(bookLoan.getReaderEmail())
-								: null;
+								: Optional.empty();
 						
 						
 		Optional<Book> book = bookRepo.findById(bookLoan.getBookId());

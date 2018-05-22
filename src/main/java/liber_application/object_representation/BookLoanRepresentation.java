@@ -23,7 +23,7 @@ public class BookLoanRepresentation {
 	
 	
 	Integer readerId;
-	String readerEmail;//Have email also to make searching etc. easy for user
+	String readerEmail;//Have email also to make searching/POST'ing etc. easy for user
 	Integer bookId;
 	
 	//@JsonFormat(pattern="yyyy-MM-dd")
@@ -140,7 +140,7 @@ public class BookLoanRepresentation {
 			throw new UserNotFoundException("User not found");
 		}
 		else {
-			System.out.println("Hittade user");
+			//System.out.println("Hittade user");
 		}
 		
 		Optional<Book> book = bookRepo.findById(getBookId());
@@ -149,7 +149,7 @@ public class BookLoanRepresentation {
 			throw new BookNotFoundException("Book not found");
 		}
 		else {
-			System.out.println("Book found");
+			//System.out.println("Book found");
 		}
 		
 		BookLoan bookLoan = new BookLoan(reader.get(), book.get(), getStartingDate(), getAllowedWeeksLength());
