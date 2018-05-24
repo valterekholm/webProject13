@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import liber_application.data.BookLoanRepository;
 import liber_application.data.BookRepository;

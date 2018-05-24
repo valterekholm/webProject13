@@ -3,8 +3,10 @@
 <head>
     <title>Save book data</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
 </head>
 <body>
+<div th:replace="header :: header"></div>
 	<h1>Save book data</h1>
     <form action="#" th:action="@{/books/addBook}" th:object="${book}" method="post">
     	<p>Titel: <input type="text" th:field="*{title}" /></p>

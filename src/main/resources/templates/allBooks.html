@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>All books</title>
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
+</head>
+<body>
+<div th:replace="header :: header"></div>
+	<h1>All books in library</h1>
+	<ul th:each="book : ${books}">
+	<li th:text="${book.title}"></li>
+	</ul>
+
+    <br/>
+    <!-- <span th:text="${message}">Message</span> -->
+</body>
+</html>

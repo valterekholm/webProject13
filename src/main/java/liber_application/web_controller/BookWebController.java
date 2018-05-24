@@ -17,6 +17,12 @@ public class BookWebController {
 	@Autowired
 	BookRepository bookRepo;
 	
+	@GetMapping("/all")
+	public String getAllBooks(Model m) {
+		m.addAttribute("books", bookRepo.findAll());
+		return "allbooks";
+	}
+	
 	@GetMapping("/addBook")
 	public String addBook(Model m) {
 		m.addAttribute("book", new Book());
