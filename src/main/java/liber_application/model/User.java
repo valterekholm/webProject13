@@ -8,6 +8,11 @@ import javax.persistence.Id;
 
 import org.springframework.core.style.ToStringCreator;
 
+/**
+ * The user class. User can borrow books. User has a auto-generated id-number, name, a unique email
+ * @author Valter Ekholm
+ *
+ */
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
     @Id

@@ -6,8 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 /**
  * The genre entity
- * It has no artificial key and a genre can currently not be altered once saved (?)
- * @author User
+ * It has no artificial key and a genre can currently not be altered once saved.
+ * If you want to change an existing genre that is used, you must create a new genre and change the connected books to that
+ * @author Valter Ekholm
  *
  */
 @Entity

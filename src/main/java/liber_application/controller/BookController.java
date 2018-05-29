@@ -36,7 +36,11 @@ import liber_application.model.Genre;
 import liber_application.model.Location;
 import liber_application.model.User;
 import liber_application.object_representation.BookRepresentation;
-
+/**
+ * The REST controller for books
+ * @author Valter Ekholm
+ *
+ */
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -125,8 +129,8 @@ public class BookController {
 	/**
 	 * Called with POST /users
 	 * 	and body of JSON {"title": "abc", "isbn":"123", "genre":"abc", "location":"abc"}
-	 * @param book
-	 * @return
+	 * @param bookRepresentation - the serialized data for a book with title, isbn, genre and location
+	 * @return - if book object was created and saved: the saved object, else NOT_ACCEPTABLE status and headers with info.
 	 */
 	@PostMapping
 	public ResponseEntity<Book> addNewBook (@Valid @RequestBody BookRepresentation bookRepresentation) {
@@ -180,10 +184,11 @@ public class BookController {
 	 * Called with PUT /books/1
 	 * 	with a body of REST {"isbn":"123d","title":"abc","genre":"abc","location":"abc"}
 	 * 	Notice: an empty field will overwrite previous data
-	 * @param id
-	 * @param book
-	 * @return
+	 * @param id - id of book to update
+	 * @param book - serialized data of the book (title, isbn, genre, location)
+	 * @return a ResponseEntity and if success containing the saved data, if not success BAD_REQUEST status code
 	 */
+	
 	@PutMapping(path="/{id}")
 	public ResponseEntity<Book> updateBook(@PathVariable Integer id, @RequestBody BookRepresentation book){
 		//Updates the user found on id of passed user-object
@@ -204,8 +209,8 @@ public class BookController {
 	/**
 	 * Delete a book by id
 	 * Called with DELETE books/1
-	 * @param id
-	 * @return
+	 * @param id - id of book
+	 * @return a ResponseEntity and if id was not found HttpStatus.NOT_FOUND else HttpStatus.OK 
 	 */
 	@DeleteMapping(path="/{id}")
 	public ResponseEntity<Book> deleteBook(@PathVariable Integer id) {
@@ -216,11 +221,13 @@ public class BookController {
 		bookRepo.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 		
+		//When trying to check if delete worked (the deleted object was gone) : some error happened
+		
 	}
 }
 /**
  * A class used for XML data of a collection of books
- * @author User
+ * @author Valter Ekholm
  *
  */
 @XmlRootElement

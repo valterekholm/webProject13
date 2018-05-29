@@ -32,7 +32,11 @@ import liber_application.object_representation.BookLoanRepresentation;
 import liber_application.object_representation.BookNotFoundException;
 import liber_application.object_representation.UserNotFoundException;
 
-
+/**
+ * A REST controller for the book loans.
+ * @author Valter Ekholm
+ *
+ */
 @RestController
 @RequestMapping("/loans")
 public class BookLoanController {
@@ -47,6 +51,7 @@ public class BookLoanController {
 	public BookRepository bookRepo;
 	
 	/**
+	 * Get all loans
 	 * Called with GET /books
 	 * Method aimed for XML (or Json) format
 	 * @return - a BookCollection that wraps all books
@@ -57,6 +62,12 @@ public class BookLoanController {
 		return new BookLoanCollection((List<BookLoan>) loanRepo.findAll());
 	}
 	
+	/**
+	 * Get loan by id
+	 * Call with GET loans/1
+	 * @param id id of loan
+	 * @return a ResponseEntity and if loan is found: the loan and HttpStatus.FOUND, else just HttpStatus.NOT_FOUND
+	 */
 	@GetMapping(path="/{id}")
 	public ResponseEntity<BookLoan> getBookLoanById(@PathVariable Integer id) {
 		Optional<BookLoan> loan = loanRepo.findById(id);
@@ -69,6 +80,12 @@ public class BookLoanController {
 		}
 	}
 	
+	/**
+	 * Get all loans connected to a specific email address
+	 * Call with GET loans/email/john@supermail.se
+	 * @param email - the email that can be stored in User of a BookLoan
+	 * @return a ResponseEntity and if any found: a BookLoanCollection with loans, else just HttpStatus.NOT_FOUND
+	 */
 	@GetMapping(path="/email/{email}")
 	public ResponseEntity<BookLoanCollection> getBookLoanByEmail(String email) {
 		Iterable<BookLoan> loans = loanRepo.findByReaderEmail(email);
@@ -80,7 +97,12 @@ public class BookLoanController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+	/**
+	 * Check if a loan is overdue (it's return date has passed)
+	 * Call with GET /loans/isOverdue/1
+	 * @param loanId - the id of a loan
+	 * @return a ResponseEntity and if found true/false else just HttpStatus.NOT_FOUND
+	 */
 	@GetMapping(path="/isOverdue/{loanId}")
 	public ResponseEntity<Boolean> isLoanOverdue(@PathVariable Integer loanId) {
 		System.out.println("isLoanOverdue with arg " + loanId);
@@ -95,6 +117,46 @@ public class BookLoanController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+	/**
+	 * Get the "status" of a loan, defined in the JavaDoc of class BookLoan
+	 * @param loanId - the id of a loan
+	 * @return string telling the status of a loan
+	 */
+	@GetMapping(path="/status/{loanId}")
+	public ResponseEntity<String> getLoanStatus(@PathVariable Integer loanId){
+		Optional<BookLoan> l = loanRepo.findById(loanId);
+		
+		if(l.isPresent()) {
+			System.out.println("Found the loan, " + loanId + ", " + l.get() + ", i-o-d: ");
+			
+			boolean isClosed = l.get().isClosed();
+			boolean isOverdue = l.get().isOverdue();
+			
+			if(isClosed){
+				//was late?
+				if(isOverdue) {
+					return new ResponseEntity<>("late", HttpStatus.OK);
+				}
+				else {
+					return new ResponseEntity<>("closed", HttpStatus.OK);
+				}
+			}
+			else { //is open / not returned
+				//is late?
+				if(isOverdue) {
+					return new ResponseEntity<>("missing", HttpStatus.OK);
+				}
+				else {
+					return new ResponseEntity<>("open", HttpStatus.OK);
+				}
+			}
+		}
+		else {
+			System.out.println("Didn't find loan, " + loanId);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
 //	/**
 //	 * Create a BookLoan and save
 //	 * Called with POST Json {"readerId":1,"bookId":1,"startingDate":"2018-01-01","allowedWeeksLength":2} or {"readerId":1,"bookId":1,"startingDate":"2018-01-01"} or {"readerId":1,"bookId":1}
@@ -162,14 +224,15 @@ public class BookLoanController {
 	
 	/**
 	 * Save a loan
-	 * Called with POST Json using userId {"readerId":2,"bookId":1} or {"readerId":2,"bookId":1,"startingDate":"2010-01-01"}
-	 * Or with POST Json using userEmail {"readerEmail":"valterekholm1@gmail.com","bookId":1} or {"readerEmail":"valterekholm1@gmail.com","bookId":1,"startingDate":"2010-01-01"}
-	 * @param bookLoan
-	 * @param bookLoanEmail
-	 * @return
+	 * Called with POST to /loans - Json {"readerId":2,"bookId":1} or {"readerId":2,"bookId":1,"startingDate":"2010-01-01"}
+	 * Or with POST to /loans {"readerEmail":"valterekholm1@gmail.com","bookId":1} or {"readerEmail":"valterekholm1@gmail.com","bookId":1,"startingDate":"2010-01-01"}
+	 * Or with a forth argument of "allowedWeeksLength":1
+	 * @param bookLoan - serialized data of a book loan (readerId, readerEmail, bookId, startingDate, allowedWeeksLength)
+	 * @return ResponseEntity with saved BookLoan or (if error) id of any book/user not found
 	 */
 	@PostMapping
-	public String saveLoan(@RequestBody BookLoanRepresentation bookLoan) { //@RequestBody Integer userId, @RequestParam Integer bookId
+	public ResponseEntity<BookLoan> saveLoan(@RequestBody BookLoanRepresentation bookLoan) { //@RequestBody Integer userId, @RequestParam Integer bookId
+		HttpHeaders responseHeaders = new HttpHeaders();
 		
 		//Set user from id (if present) or email
 		Optional<User> user = bookLoan.getReaderId()!=null
@@ -177,30 +240,38 @@ public class BookLoanController {
 						: bookLoan.getReaderEmail()!=null
 						? userRepo.getByEmail(bookLoan.getReaderEmail())
 								: Optional.empty();
-						
-						
-		Optional<Book> book = bookRepo.findById(bookLoan.getBookId());
 
+		Optional<Book> book = bookRepo.findById(bookLoan.getBookId());
 		System.out.println("Save loan: " + bookLoan);
 
-		if (user.isPresent() && book.isPresent()) {
+		if (user.isPresent() && book.isPresent()) {	
+			
 			Date startingDate = bookLoan.getStartingDate() == null ? new Date() : bookLoan.getStartingDate();
 			BookLoan loan = new BookLoan(user.get(), book.get(), startingDate);
-			loanRepo.save(loan);
-			return "Saved";
+			loan = loanRepo.save(loan);
+			return new ResponseEntity<>(loan, HttpStatus.CREATED);
 		}
-		return "Not saved";
+		else {
+			if(!user.isPresent()) {
+				responseHeaders.add("User not found", bookLoan.getEmailOrId());
+			}
+			if(!book.isPresent()) {
+				responseHeaders.add("Book not found", bookLoan.getBookId().toString());
+			}
+			return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_ACCEPTABLE);
+		}
 	}
 	/**
-	 * Called with PUT /loans and Json Body {"readerId": 1, "bookId":1, "startingDate":"2011-11-11", "allowedWeeksLength":1}, see saveLoan()
-	 * @param loanId
-	 * @param loan
-	 * @return
+	 * Update a loan - overwriting all fields except id
+	 * Called with PUT /loans/1 and Json Body {"readerId": 1, "bookId":1, "startingDate":"2011-11-11", "allowedWeeksLength":1}, see saveLoan()
+	 * @param loanId - the id of a loan
+	 * @param loan - serialized data of a book loan
+	 * @return The updated BookLoan
 	 */
-	@PutMapping(path="/{id}")
-	public ResponseEntity<BookLoan> updateLoan(@PathVariable Integer id, @RequestBody BookLoanRepresentation loan){//@PathVariable Integer loanId
+	@PutMapping(path="/{loanId}")
+	public ResponseEntity<BookLoan> updateLoan(@PathVariable Integer loanId, @RequestBody BookLoanRepresentation loan){//@PathVariable Integer loanId
 		System.out.println("updateLoan med " + loan);
-		Optional<BookLoan> realLoan = loanRepo.findById(id);
+		Optional<BookLoan> realLoan = loanRepo.findById(loanId);
 		HttpHeaders responseHeaders = new HttpHeaders();
 		
 		boolean accepted = true;
@@ -250,9 +321,30 @@ public class BookLoanController {
 	}
 	
 	/**
+	 * Register a returning of a book, setting the returnedDate to present date and time
+	 * Called with PUT /back/1
+	 * @param id - the id of a loan
+	 * @return the updated BookLoan
+	 */
+	@PutMapping(path="/back/{id}")
+	public ResponseEntity<BookLoan> endNow(@PathVariable Integer id){
+		Optional<BookLoan> realLoan = loanRepo.findById(id);
+		
+		if(realLoan.isPresent()) {
+			realLoan.get().makeEndedNow();
+			BookLoan saved = loanRepo.save(realLoan.get());
+			
+			return new ResponseEntity<>(saved, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	/**
 	 * Called with DELETE /loans/1
-	 * @param loanId
-	 * @return
+	 * @param loanId - the id of a loan
+	 * @return a ResponseEntity and if id not found HttpStatus.NOT_FOUND, else HttpStatus.OK
 	 */
 	@DeleteMapping(path="/{id}")
 	public ResponseEntity<BookLoan> deleteLoan(@PathVariable Integer loanId){
@@ -261,9 +353,16 @@ public class BookLoanController {
 		}
 		loanRepo.deleteById(loanId);
 		return new ResponseEntity<>(HttpStatus.OK);
+		
+		//When trying to check if delete worked (the deleted object was gone) : some error happened
 	}
 }
 
+/**
+ * Used to enable returning of list of user with good format
+ * @author Valter Ekholm
+ *
+ */
 @XmlRootElement
 class BookLoanCollection{
     @JacksonXmlProperty(localName = "bookLoan")

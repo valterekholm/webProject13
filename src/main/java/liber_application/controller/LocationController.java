@@ -22,6 +22,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import liber_application.data.LocationRepository;
 import liber_application.model.Location;
 
+/**
+ * The REST controller for book locations (shelves and similar)
+ * @author Valter Ekholm
+ *
+ */
 @RestController
 @RequestMapping("/locations")
 public class LocationController {
@@ -37,7 +42,7 @@ public class LocationController {
 	
 	/**
 	 * Used to get a well-formatted collection of all locations i database
-	 * @return
+	 * @return a LocationCollection
 	 */
 	@GetMapping
 	public LocationCollection getLocationsCollection() {
@@ -79,8 +84,8 @@ public class LocationController {
 	
 	/**
 	 * Delete a location post, by name
-	 * @param name
-	 * @return
+	 * @param name - the name of location to delete
+	 * @return a ResponseEntity and if location not found HttpStatus.NOT_FOUND, else HttpStatus.OK
 	 */
 	@DeleteMapping(path="/{name}")
 	public ResponseEntity<Location> deleteLocation(@PathVariable String name) {
@@ -102,6 +107,11 @@ public class LocationController {
 	}
 }
 
+/**
+ * 
+ * @author Valter Ekholm
+ *
+ */
 @XmlRootElement
 class LocationCollection{
     @JacksonXmlProperty(localName = "location")

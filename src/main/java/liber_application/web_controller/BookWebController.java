@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import liber_application.data.BookRepository;
 import liber_application.model.Book;
 
+/**
+ * Web-controller for books
+ * @author Valter Ekholm
+ *
+ */
 @Controller
 @RequestMapping("books")
 public class BookWebController {

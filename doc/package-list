@@ -1,0 +1,7 @@
+liber_application
+liber_application.controller
+liber_application.data
+liber_application.model
+liber_application.object_representation
+liber_application.test
+liber_application.web_controller

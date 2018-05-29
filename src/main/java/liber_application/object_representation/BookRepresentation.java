@@ -12,8 +12,8 @@ import liber_application.model.Location;
 
 /**
  * A representation to be used for POST of book-data (REST), to clean up the receiving of REST data for new book entry
- * So user can avoid nested XML/REST
- * @author User
+ * So user can avoid nested JSON/XML
+ * @author Valter Ekholm
  *
  */
 public class BookRepresentation {

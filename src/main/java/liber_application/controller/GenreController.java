@@ -20,6 +20,13 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import liber_application.data.GenreRepository;
 import liber_application.model.Genre;
 
+/**
+ * The REST controller for genre.
+ * Because the class has only one field (which is id also), no updates can currently be made to an existing genre
+ * If change of genre is wanted, a new genre must be created, and books altered to this new genre.
+ * @author Valter Ekholm
+ *
+ */
 @RestController
 @RequestMapping("/genres")
 public class GenreController {
@@ -35,7 +42,7 @@ public class GenreController {
 	
 	/**
 	 * Used to get a well-formatted collection of all genres i database
-	 * @return
+	 * @return a GenreCollection of all genres
 	 */
 	@GetMapping(path="/allXML")
 	public GenreCollection getGenresCollection() {
@@ -43,6 +50,11 @@ public class GenreController {
 		return new GenreCollection((List<Genre>) genreRepo.findAll());
 	}
 	
+	/**
+	 * Add a genre by use of url
+	 * @param name - name of new genre
+	 * @return String with info
+	 */
 	@PostMapping(path="/add/{name}")
 	public String addGenre(@PathVariable String name) {
 		if(genreRepo.getByName(name)==null) {
@@ -55,6 +67,11 @@ public class GenreController {
 		
 	}
 	
+	/**
+	 * Add genre by use of Request body
+	 * @param name - a String
+	 * @return a ResponseEntity and if the genre allready exists HttpStatus.ALREADY_REPORTED, else the new genre and HttpStatus.CREATED
+	 */
 	@PostMapping(path="/add")
 	public ResponseEntity<Genre> addGenreREST(@RequestBody String name){
 		
@@ -69,8 +86,8 @@ public class GenreController {
 	
 	/**
 	 * Delete a genre post by name
-	 * @param name
-	 * @return
+	 * @param name - a String
+	 * @return a ResponseEntity and if was deleted HttpStatus.OK, else if not found HttpStatus.NOT_FOUND, else HttpStatus.INTERNAL_SERVER_ERROR
 	 */
 	@PostMapping(path="/delete/{name}")
 	public ResponseEntity<Genre> deleteGenre(@PathVariable String name) {

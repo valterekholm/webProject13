@@ -1,5 +1,10 @@
 package liber_application.object_representation;
 
+/**
+ * Used to simplify data transfer with REST, no nested data is needed in JSON / XML, and hide some fields
+ * @author Valter Ekholm
+ *
+ */
 public class UserRepresentation {
 	
     private String name;

@@ -18,6 +18,11 @@ import liber_application.model.Genre;
 import liber_application.model.Location;
 import liber_application.model.User;
 
+/**
+ * A Spring Boot application made for Lexicon in 2018
+ * @author Valter Ekholm
+ *
+ */
 @SpringBootApplication
 public class Application {
 	

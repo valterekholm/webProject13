@@ -7,8 +7,9 @@ import javax.persistence.Id;
 
 /**
  * A entity for location
- * The lack of a artificial key makes it currently impossible to alter any saved Location name (?)
- * @author User
+ * The lack of a artificial key makes it currently impossible to alter any saved Location name
+ * If you want to update a location you must make a new location and set the connected books to that
+ * @author Valter Ekholm
  *
  */
 @Entity

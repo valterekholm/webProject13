@@ -1,19 +1,21 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Save book data</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
+<title>Save book data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
 </head>
 <body>
 <div th:replace="header :: header"></div>
-	<h1>Save book data</h1>
-    <form action="#" th:action="@{/books/addBook}" th:object="${book}" method="post">
-    	<p>Titel: <input type="text" th:field="*{title}" /></p>
-    	<p>ISBN: <input type="text" th:field="*{isbn}" /></p>
-        <p><input type="submit" value="Add" /> </p>
-    </form>
-    <br/>
-    <span th:text="${message}">Message</span>
+<main>
+<h1>Save book data</h1>
+<form action="#" th:action="@{/books/addBook}" th:object="${book}" method="post">
+<p><label>Titel:</label><input type="text" th:field="*{title}" /></p>
+<p><label>ISBN:</label><input type="text" th:field="*{isbn}" /></p>
+<p><label></label><input type="submit" value="Add" /> </p>
+</form>
+<br/>
+<span th:text="${message}">Message</span>
+</main>
 </body>
 </html>

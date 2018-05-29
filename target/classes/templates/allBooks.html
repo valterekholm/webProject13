@@ -7,12 +7,13 @@
 </head>
 <body>
 <div th:replace="header :: header"></div>
-	<h1>All books in library</h1>
-	<ul th:each="book : ${books}">
-	<li th:text="${book.title}"></li>
-	</ul>
-
-    <br/>
-    <!-- <span th:text="${message}">Message</span> -->
+<main>
+<h1>All books in library</h1>
+<ul th:each="book : ${books}" class="bookList">
+<li><span th:text="${book.title}"></span>&nbsp;<span th:text="${book.isbn}"></span></li>
+</ul>
+<br/>
+<!-- <span th:text="${message}">Message</span> -->
+</main>
 </body>
 </html>

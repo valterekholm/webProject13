@@ -12,7 +12,11 @@ import liber_application.data.UserRepository;
 import liber_application.model.Book;
 import liber_application.model.BookLoan;
 import liber_application.model.User;
-
+/**
+ * Used to simplify data transfer with REST, no nested data is needed in JSON / XML, and hide some fields
+ * @author Valter Ekholm
+ *
+ */
 public class BookLoanRepresentation {
 	
 	@Autowired
@@ -184,9 +188,10 @@ public class BookLoanRepresentation {
 		
 		return bookLoan;
 	}
-
-
-
+	
+	public String getEmailOrId() {
+		return getReaderEmail()!=null?getReaderEmail():getReaderId()!=null?getReaderId().toString():"";
+	}
 	@Override
 	public String toString() {
 		return "BookLoanRepresentation [readerId=" + readerId + ", readerEmail=" + readerEmail + ", bookId=" + bookId

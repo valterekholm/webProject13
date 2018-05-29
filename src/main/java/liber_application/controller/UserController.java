@@ -26,6 +26,11 @@ import liber_application.data.UserRepository;
 import liber_application.model.User;
 import liber_application.object_representation.UserRepresentation;
 
+/**
+ * A REST controller for user
+ * @author Valter Ekholm
+ *
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -59,8 +64,8 @@ public class UserController {
 	/**
 	 * 
 	 * Called with GET /users/1
-	 * @param id
-	 * @return
+	 * @param id - id of user
+	 * @return Optional of User (can be null)
 	 */
 	@GetMapping(path="/{id}")
 	public Optional<User> getUserById(@PathVariable String id) {
@@ -83,8 +88,8 @@ public class UserController {
 	/**
 	 * Called with POST /users
 	 * 	and body with JSON {"name":"b","email":"c"}
-	 * @param userRepresentation
-	 * @return
+	 * @param userRepresentation - serialized data of a user (name, email) 
+	 * @return a ResponseEntity and HttpStatus.CREATED
 	 */
 	@PostMapping
 	public ResponseEntity<User> addNewUser(@Valid @RequestBody UserRepresentation userRepresentation) {
@@ -107,9 +112,9 @@ public class UserController {
 	 * Called with PUT users/1
 	 * 	and body with JSON {"name":"a", "email":"b"}
 	 * 	id only needed in url
-	 * @param id
-	 * @param user
-	 * @return
+	 * @param id - the id of a user
+	 * @param user - serialized data of a user (name, email)
+	 * @return a ResponseEntity and user if not found HttpStatus.BAD_REQUEST, else the saved user, and HttpStatus.ACCEPTED
 	 */
 	@PutMapping(path="/{id}")
 	public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user){
@@ -128,8 +133,8 @@ public class UserController {
 	
 	/**
 	 * Called with DELETE users/1
-	 * @param id
-	 * @return
+	 * @param id - the id of a user
+	 * @return a ResponseEntity and if user not found HttpStatus.NOT_FOUND, else HttpStatus.OK
 	 */
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<User> deleteUser(@PathVariable Integer id) {
@@ -138,11 +143,13 @@ public class UserController {
 		}
 		userRepo.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
+		
+		//When trying to check if delete worked (the deleted object was gone) : some error happened
 	}
 	
 	/**
 	 * A object to collect Users used for XML
-	 * @author User
+	 * @author Valter Ekholm
 	 *
 	 */
 	@XmlRootElement
