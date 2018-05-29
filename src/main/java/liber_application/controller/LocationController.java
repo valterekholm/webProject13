@@ -28,7 +28,7 @@ import liber_application.model.Location;
  *
  */
 @RestController
-@RequestMapping("/locations")
+@RequestMapping("/rest/locations")
 public class LocationController {
 	
 	@Autowired

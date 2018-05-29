@@ -32,7 +32,7 @@ import liber_application.object_representation.UserRepresentation;
  *
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/rest/users")
 public class UserController {
 	
 	@Autowired

@@ -34,12 +34,12 @@ nav li a:hover{
 	background-color: rgba(100,100,100,.5);
 }
 
-.bookList span{
+.bookList span, .loanList span{
 	display: inline-block;
 	width: 200px;
 	margin-left:20px;
 }
-.bookList span:first-child{
+.bookList span:first-child, .loanList span:first-child{
 	margin-left: 0;
 }
 

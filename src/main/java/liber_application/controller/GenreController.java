@@ -28,7 +28,7 @@ import liber_application.model.Genre;
  *
  */
 @RestController
-@RequestMapping("/genres")
+@RequestMapping("/rest/genres")
 public class GenreController {
 	
 	@Autowired

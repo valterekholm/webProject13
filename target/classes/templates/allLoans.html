@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>All loans</title>
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<main>
+<h1>All loans</h1>
+<ul th:each="loan : ${loans}" class="loanList">
+<li><span th:text="${loan.reader.name}"></span><span th:text="${loan.book.isbn}"></span><span th:text="${loan.book.title}"></span><span th:text="${loan.startingDate}"></span></li><!-- format thymel. ${#dates.format( field )} -->
+</ul>
+<br/>
+<!-- <span th:text="${message}">Message</span> -->
+</main>
+</body>
+</html>

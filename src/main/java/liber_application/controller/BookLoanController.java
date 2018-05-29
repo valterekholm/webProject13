@@ -38,7 +38,7 @@ import liber_application.object_representation.UserNotFoundException;
  *
  */
 @RestController
-@RequestMapping("/loans")
+@RequestMapping("/rest/loans")
 public class BookLoanController {
 	
 	@Autowired

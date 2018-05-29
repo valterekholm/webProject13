@@ -42,7 +42,7 @@ import liber_application.object_representation.BookRepresentation;
  *
  */
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/rest/books")
 public class BookController {
 	
 	@Autowired
