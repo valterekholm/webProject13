@@ -1,12 +1,22 @@
 package liber_application.web_controller;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import liber_application.data.BookLoanRepository;
+import liber_application.data.BookRepository;
+import liber_application.data.UserRepository;
+import liber_application.model.Book;
+import liber_application.model.BookLoan;
+import liber_application.object_representation.BookLoanRepresentation;
+import liber_application.object_representation.BookNotFoundException;
+import liber_application.object_representation.UserNotFoundException;
 
 @Controller
 @RequestMapping("loans")
@@ -15,9 +25,49 @@ public class LoansWebController {
 	@Autowired
 	BookLoanRepository loansRepo;
 	
+	@Autowired
+	UserRepository usersRepo;
+	
+	@Autowired
+	BookRepository booksRepo;
+	
 	@GetMapping("/all")
 	public String getAllBooks(Model m) {
 		m.addAttribute("loans", loansRepo.findAll());
-		return "allloans";
+		return "listloans";
+	}
+	
+	@GetMapping("/addLoan")
+	public String addLoan(Model m) {
+		m.addAttribute("loan", new BookLoan());
+		m.addAttribute("users", usersRepo.findAll());
+		m.addAttribute("books", booksRepo.findAll());
+		return "addloan";
+	}
+	
+	/**
+	 * Saves a loan starting at the present time
+	 * @param loan - a loan with user and book
+	 * @param m
+	 * @return
+	 * @throws UserNotFoundException
+	 * @throws BookNotFoundException
+	 */
+	@PostMapping("/addLoan")
+	public String saveLoan(BookLoan loan, Model m) throws UserNotFoundException, BookNotFoundException {
+		//BookLoan bl = loan.makeBookLoanObject();
+		m.addAttribute("loan", new BookLoan());
+		m.addAttribute("users", usersRepo.findAll());
+		m.addAttribute("books", booksRepo.findAll());
+		
+		//Date wasn't auto added
+		loan.setStartingDate(new Date());
+		
+		loan.setWeeksLength(BookLoan.STANDARD_LOAN_PERIOD_WEEKS);
+		
+		
+		BookLoan savedBL = loansRepo.save(loan);//bl
+		m.addAttribute("message", "Saved loan: " + savedBL.getId());
+		return "addloan";
 	}
 }

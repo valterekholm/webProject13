@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>All loans</title>
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
+<link rel="stylesheet" href="../static/css/startPage.css" th:href="@{/css/startPage.css}" type="text/css" />
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<main>
+<h1>Welcome to startpage</h1>
+
+<section>
+<div class="startPageLink">
+<a href="/loans/all"><div class="startLinkButton">Loans</div>
+<div class="startLinkCaption"><span th:text="${#lists.size(loans)}"></span> Loan(s)</div>
+</a>
+</div>
+
+<div class="startPageLink">
+<a href="/books/all"><div class="startLinkButton">Books</div>
+<div class="startLinkCaption"><span th:text="${#lists.size(books)}"></span> books</div>
+</a>
+</div>
+
+<div class="startPageLink">
+<a href="/users/all"><div class="startLinkButton">Users</div>
+<div class="startLinkCaption"><span th:text="${#lists.size(users)}"></span> user(s)</div>
+</a>
+</div>
+
+<div class="startPageLink">
+<a href="/genres/all"><div class="startLinkButton">Genres</div>
+<div class="startLinkCaption"><span th:text="${#lists.size(genres)}"></span> genres</div>
+</a>
+</div>
+
+<div class="startPageLink">
+<a href="/locations/all"><div class="startLinkButton">Locations</div>
+<div class="startLinkCaption"><span th:text="${#lists.size(locations)}"></span> locations</div>
+</a>
+</div>
+</section>
+<!-- <span th:text="${message}">Message</span> -->
+</main>
+</body>
+</html>

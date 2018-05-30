@@ -25,7 +25,7 @@ public class BookWebController {
 	@GetMapping("/all")
 	public String getAllBooks(Model m) {
 		m.addAttribute("books", bookRepo.findAll());
-		return "allbooks";
+		return "listbooks";
 	}
 	
 	@GetMapping("/addBook")

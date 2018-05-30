@@ -6,6 +6,34 @@ body, html{
 	font-size: 20px;
 }
 
+a{
+	text-decoration: none;
+}
+
+/* unvisited link */
+a:link {
+    color: #884444;
+}
+
+/* visited link */
+a:visited {
+    color: #665555;
+}
+
+/* mouse over link */
+a:hover {
+    color: #995555;
+}
+
+/* selected link */
+a:active {
+    color: #aaa;
+}
+
+img{
+	border: 0;
+}
+
 main{
 	padding: 20px 30px;
 }
@@ -19,6 +47,7 @@ nav ul{
 	margin:0;
 	list-style-type: none;
 	overflow: auto;
+	padding-left: 10px;
 }
 
 nav li{
@@ -34,12 +63,23 @@ nav li a:hover{
 	background-color: rgba(100,100,100,.5);
 }
 
-.bookList span, .loanList span{
+nav ul ul{
+	height: 0;
+	position: absolute;
+	padding-left:0;
+	
+}
+
+nav ul li:hover ul{
+	height: auto;
+}
+
+.bookList span, .loanList span, .userList span{
 	display: inline-block;
 	width: 200px;
 	margin-left:20px;
 }
-.bookList span:first-child, .loanList span:first-child{
+.bookList span:first-child, .loanList span:first-child, .userList span:first-child{
 	margin-left: 0;
 }
 

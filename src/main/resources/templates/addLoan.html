@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Save loan data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<main>
+<h1>Save loan</h1>
+<form action="#" th:action="@{/loans/addLoan}" th:object="${loan}" method="post">
+<p><label>User:</label><select th:field="*{reader.id}">
+<option th:each="reader : ${users}" th:value="${reader.id}" th:text="${reader.name}"></option>
+</select></p>
+<p><label>Book:</label><select name="book" id="book" th:field="*{book.id}">
+<option th:each="book : ${books}" th:value="${book.id}" th:text="${book.title}"></option>
+</select></p>
+<p><label></label><input type="submit" value="Add" /> </p>
+</form>
+<br/>
+<span th:text="${message}">Message</span>
+</main>
+</body>
+</html>

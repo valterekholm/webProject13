@@ -122,7 +122,7 @@ public class BookLoanRepresentation {
 	}
 	
 	public BookLoan makeBookLoanObject() throws UserNotFoundException, BookNotFoundException{
-		System.out.println("makeBookLoanObject");
+		System.out.println("makeBookLoanObject " + toString());
 		Optional<User> reader;
 		
 		//if both are set

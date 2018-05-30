@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>All locations</title>
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<main>
+<h1>All locations in library</h1>
+<ul th:each="location : ${locations}" class="locationList">
+<li><span th:text="${location.name}"></span>&nbsp;<span th:text="${location.description}"></span></li>
+</ul>
+<br/>
+<!-- <span th:text="${message}">Message</span> -->
+</main>
+</body>
+</html>

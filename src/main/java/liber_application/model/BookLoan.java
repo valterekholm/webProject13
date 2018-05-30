@@ -39,7 +39,9 @@ public class BookLoan {
 	
 	public static final Integer STANDARD_LOAN_PERIOD_WEEKS = 3;//weeks
 	
-	public BookLoan() {}
+	public BookLoan() {
+		System.out.println("Constructor BookLoan empty");
+	}
 	
 	public BookLoan(User reader, Book book) {
 		
