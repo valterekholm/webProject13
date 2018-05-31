@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>All loans</title>
-<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
+
+<head th:include="header :: headerFragment">
+<title id="pageTitle">All loans</title>
 <link rel="stylesheet" href="../static/css/startPage.css" th:href="@{/css/startPage.css}" type="text/css" />
 </head>
+
 <body>
 <div th:replace="header :: header"></div>
 <main>
@@ -20,7 +20,7 @@
 
 <div class="startPageLink">
 <a href="/books/all"><div class="startLinkButton">Books</div>
-<div class="startLinkCaption"><span th:text="${#lists.size(books)}"></span> books</div>
+<div class="startLinkCaption"><span th:text="${#lists.size(books)}"></span> book(s)</div>
 </a>
 </div>
 

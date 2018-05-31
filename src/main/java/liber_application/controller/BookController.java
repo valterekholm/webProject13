@@ -2,6 +2,7 @@ package liber_application.controller;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlElement;
@@ -62,6 +63,60 @@ public class BookController {
 	public BookCollection getBooksCollection() {
 		// This returns a JSON or XML with the books
 		return new BookCollection((List<Book>) bookRepo.findAll());
+	}
+	
+	/**
+	 * Get book by id
+	 * Called with GET /rest/books/1
+	 * @param id
+	 * @return - ResponseEntity and if book found HttpStatus.FOUND, else HttpStatus.NOT_FOUND
+	 */
+	@GetMapping(path="/{id}")
+	public ResponseEntity<Book> getBookById(@PathVariable Integer id){
+		Optional<Book> book = bookRepo.findById(id);
+		
+		if(book.isPresent()) {
+			return new ResponseEntity<>(book.get(), HttpStatus.FOUND);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	/**
+	 * Search with any string matching letters in book titles, case insensitive
+	 * Called with GET /rest/books/title/abc
+	 * Swedish letters å,ä,ö must be url-encoded to %C3%A5 %C3%A4 %C3%B6
+	 * A stored title of 'å' can be found with /rest/book/title/a
+	 * @param title
+	 * @return A BookCollection of found books wrapped in a ResponseEntity with HttpStatus.FOUND or else just HttpStatus.NOT_FOUND
+	 */
+	@GetMapping(path="/title/{title}")
+	public ResponseEntity<BookCollection> searchByTitle(@PathVariable String title){
+		System.out.println("searchByTitle: " + title);
+		List<Book> booksFound = bookRepo.findByTitle(title.toLowerCase());
+		
+		if(booksFound.size()==0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<>(new BookCollection(booksFound), HttpStatus.FOUND);
+	}
+	
+	/**
+	 * Get books by a certain isbn
+	 * @param isbn
+	 * @return a BookCollection wrapped in a ResponseEntity if found with HttpStatus.FOUND else just HttpStatus.NOT_FOUND
+	 */
+	@GetMapping(path="/isbn/{isbn}")
+	public ResponseEntity<BookCollection> getByIsbn(@PathVariable String isbn){
+		List<Book> booksFound = bookRepo.getByIsbn(isbn);
+		
+		if(booksFound.size()==0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<>(new BookCollection(booksFound), HttpStatus.FOUND);
 	}
 	
 	

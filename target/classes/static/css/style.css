@@ -62,11 +62,12 @@ nav li a{
 nav li a:hover{
 	background-color: rgba(100,100,100,.5);
 }
-
+/*The submenu (drop down)*/
 nav ul ul{
 	height: 0;
 	position: absolute;
 	padding-left:0;
+	background-color: #898989;/*#646464;*/
 	
 }
 

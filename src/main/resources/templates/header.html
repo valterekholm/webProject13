@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head th:fragment="headerFragment">
 <meta charset="UTF-8">
+<title th:include=":: #pageTitle">Title</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" />
 <title>Header file</title>
 </head>
 <body>
