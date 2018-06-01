@@ -16,7 +16,7 @@ import liber_application.data.UserRepository;
 import liber_application.model.User;
 
 /**
- * A demo controller
+ * A demo controller, used for web start page
  * @author Ulf Bilting
  *
  */
@@ -67,6 +67,10 @@ public class MainController {
 		m.addAttribute("books", booksRepo.findAll());
 		m.addAttribute("genres", genreRepo.findAll());
 		m.addAttribute("locations", locationRepo.findAll());
+		
+		m.addAttribute("isStartPage", true);
+		
+		
 		return "startpage";
 	}
 }
