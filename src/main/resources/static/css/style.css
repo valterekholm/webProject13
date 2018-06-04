@@ -135,3 +135,9 @@ span#message{
 	display: block;
 	margin: 20px auto;
 }
+
+.spanButton{
+	border: 2px inset rgba(80,80,80,.3);
+	border-radius: 7px;
+	margin: 0 10px;
+}

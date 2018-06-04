@@ -45,91 +45,91 @@ public class BookWebController {
 		return "listbooks";
 	}
 	
-//	@GetMapping("/addBook")
-//	public String addBook(Model m) {
-//		m.addAttribute("book", new Book());
-//		m.addAttribute("genres", genresRepo.findAll());
-//		m.addAttribute("locations", locationsRepo.findAll());
-//		return "addbook";
-//	}
-//	
-//	@PostMapping("/addBook")
-//	public String saveBook(Book book, Model m) {
-//		System.out.println("saveBook with " + book);
-//		
-//		m.addAttribute("book", new Book());
-//		m.addAttribute("genres", genresRepo.findAll());
-//		m.addAttribute("locations", locationsRepo.findAll());
-//		
-//		Book savedB = bookRepo.save(book);
-//		m.addAttribute("message", "Saved book: " + savedB.getTitle());
-//		return "addbook";
-//	} //out comm. to favor the possibility to omit genre
-	
-	//This was an attempt to make the genre-field optional
 	@GetMapping("/addBook")
-	public String addBook2(Model m) {
-		m.addAttribute("book", new BookRepresentation());
+	public String addBook(Model m) {
+		m.addAttribute("book", new Book());
 		m.addAttribute("genres", genresRepo.findAll());
 		m.addAttribute("locations", locationsRepo.findAll());
-		return "addbook2";
+		return "addbook";
 	}
 	
-	//testing BookRepresentation for enable null genre
 	@PostMapping("/addBook")
-	public String saveBook(BookRepresentation bookRepresentation, Model m) {
-		System.out.println("saveBook with " + bookRepresentation);
+	public String saveBook(Book book, Model m) {
+		System.out.println("saveBook with " + book);
 		
-		Book b = new Book();
+		m.addAttribute("book", new Book());
+		m.addAttribute("genres", genresRepo.findAll());
+		m.addAttribute("locations", locationsRepo.findAll());
 		
-		m.addAttribute("book", new BookRepresentation());
-		
-		//null fields...
-		
-		boolean accepted = true;
-		
-		if(bookRepresentation.getGenre()!=null) { //so genre can be null
-			String genre = bookRepresentation.getGenre();
-			//book.setGenre(new Genre(bookRepresentation.getGenre()));
-			//load from database
-			if(genresRepo.getByName(genre)!=null) {
-				//Genre Exists
-				b.setGenre(genresRepo.getByName(genre));
-			}
-			else {
-				System.out.println("Genre not found, " + genre);
-				accepted = false;
-				//responseHeaders.add("Genre not found", genre);
-				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-			}
-		}
-		
-		if(bookRepresentation.getLocation()!=null) {
-
-			String location = bookRepresentation.getLocation();
-			if(locationsRepo.getByName(location)!=null) {
-				b.setLocation(locationsRepo.getByName(location));
-			}
-			else {
-				accepted = false;
-				System.out.println("Location not found");
-				//responseHeaders.add("Location not found", location);
-				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-			}
-		}
-		
-		if(!accepted) {
-			m.addAttribute("message", "Could not save book: " + bookRepresentation.getTitle());
-			return "addBook2";
-		}
-		
-		b.setTitle(bookRepresentation.getTitle());
-		b.setIsbn(bookRepresentation.getIsbn());
-		
-		b = bookRepo.save(b);
-		
-		return "addbook2";
+		Book savedB = bookRepo.save(book);
+		m.addAttribute("message", "Saved book: " + savedB.getTitle());
+		return "addbook";
 	}
+	
+	//This was an attempt to make the genre-field optional
+//	@GetMapping("/addBook")
+//	public String addBook2(Model m) {
+//		m.addAttribute("book", new BookRepresentation());
+//		m.addAttribute("genres", genresRepo.findAll());
+//		m.addAttribute("locations", locationsRepo.findAll());
+//		return "addbook2";
+//	}
+//	
+//	//testing BookRepresentation for enable null genre
+//	@PostMapping("/addBook")
+//	public String saveBook(BookRepresentation bookRepresentation, Model m) {
+//		System.out.println("saveBook with " + bookRepresentation);
+//		
+//		Book b = new Book();
+//		
+//		m.addAttribute("book", new BookRepresentation());
+//		
+//		//null fields...
+//		
+//		boolean accepted = true;
+//		
+//		if(bookRepresentation.getGenre()!=null) { //so genre can be null
+//			String genre = bookRepresentation.getGenre();
+//			//book.setGenre(new Genre(bookRepresentation.getGenre()));
+//			//load from database
+//			if(genresRepo.getByName(genre)!=null) {
+//				//Genre Exists
+//				b.setGenre(genresRepo.getByName(genre));
+//			}
+//			else {
+//				System.out.println("Genre not found, " + genre);
+//				accepted = false;
+//				//responseHeaders.add("Genre not found", genre);
+//				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//			}
+//		}
+//		
+//		if(bookRepresentation.getLocation()!=null) {
+//
+//			String location = bookRepresentation.getLocation();
+//			if(locationsRepo.getByName(location)!=null) {
+//				b.setLocation(locationsRepo.getByName(location));
+//			}
+//			else {
+//				accepted = false;
+//				System.out.println("Location not found");
+//				//responseHeaders.add("Location not found", location);
+//				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//			}
+//		}
+//		
+//		if(!accepted) {
+//			m.addAttribute("message", "Could not save book: " + bookRepresentation.getTitle());
+//			return "addBook2";
+//		}
+//		
+//		b.setTitle(bookRepresentation.getTitle());
+//		b.setIsbn(bookRepresentation.getIsbn());
+//		
+//		b = bookRepo.save(b);
+//		
+//		return "addbook2";
+//	} //out-comm. due to complex code
 	
 	@GetMapping("/editBook/{id}")
 	public String editBook(@PathVariable Integer id, Model m) {
@@ -172,6 +172,7 @@ public class BookWebController {
 		
 		if(awayBook.isPresent()) {
 			bookRepo.delete(awayBook.get());
+			m.addAttribute("books", bookRepo.findAll());
 			m.addAttribute("message", "Book deleted: " + awayBook.get().getTitle());
 		}
 		

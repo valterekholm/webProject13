@@ -13,7 +13,6 @@
 <p><label for="isbn">ISBN:</label><input type="text" th:field="*{isbn}" /></p>
 <p><label for="author">Author:</label><input type="text" th:field="*{author}" /></p>
 <p><label for="genre">Genre:</label><select th:field="*{genre.name}">
-<option value="null">No genre</option>
 <option th:each="genre : ${genres}" th:value="${genre.name}" th:text="${genre.name}"></option>
 </select></p>
 <p><label for="location">Location:</label><select th:field="*{location.name}">
