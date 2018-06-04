@@ -1,5 +1,6 @@
 package liber_application.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +25,7 @@ public class Book {
 	@Size(min=2, max=50)
 	private String title;
 	private String author;
-	@ManyToOne
+	@ManyToOne(optional = true)//test med optional
 	private Genre genre;
 	
 	@ManyToOne
@@ -48,7 +49,7 @@ public class Book {
 		super();
 		this.isbn = isbn;
 		this.title = title;
-		this.genre = genre;
+		this.genre = genre!=null?genre:null;//test 4/6 -18
 	}
 	
 	public Book(String isbn, String title, String author) {
@@ -62,7 +63,7 @@ public class Book {
 		super();
 		this.isbn = isbn;
 		this.title = title;
-		this.genre = genre;
+		this.genre = genre!=null?genre:null;//test 4/6 -18
 		this.location = location;
 	}
 	
@@ -121,9 +122,11 @@ public class Book {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	
+
+	@Override
 	public String toString() {
-		return "Book id:"+getId()+", ISBN:"+getIsbn()+", title:"+getTitle()+", genre:"+getGenre().getName()+", location:"+getLocation().getName();
+		return "Book [id=" + id + ", isbn=" + isbn + ", title=" + title + ", author=" + author + ", genre=" + genre.getName()
+				+ ", location=" + location.getName() + "]";
 	}
 		
 }

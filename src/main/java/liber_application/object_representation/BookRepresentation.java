@@ -69,7 +69,12 @@ public class BookRepresentation {
 	
 	
 	public Book makeBookObject() {
-		Book b = new Book(isbn,title,new Genre(genre),new Location(location));
+		Book b;
+		Genre g = genre!=null?new Genre(genre):null;
+		Location l = location!=null?new Location(location):null;
+
+		b = new Book(isbn,title,g,l);
+
 		return b;
 	}
 	

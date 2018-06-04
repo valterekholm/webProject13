@@ -33,6 +33,9 @@ public class LocationsWebController {
 	@PostMapping("/addLocation")
 	public String saveLocation(Location location, Model m) {
 		m.addAttribute("location", new Location());
+		if(location.getDescription().isEmpty()) {
+			location.setDescription(null);
+		}
 		Location savedL = locationsRepo.save(location);
 		m.addAttribute("message", "Saved location: " + savedL.getName());
 		return "addlocation";

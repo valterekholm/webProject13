@@ -8,7 +8,7 @@
 <main>
 <h1>All loans</h1>
 <ul th:each="loan : ${loans}" class="loanList">
-<li><span th:text="${loan.reader.name}"></span><span th:text="${loan.book.isbn}"></span><span th:text="${loan.book.title}"></span><span th:text="${loan.startingDate}"></span></li><!-- format thymel. ${#dates.format( field )} -->
+<li><span th:text="${loan.reader.name}"></span><span th:text="${loan.book.isbn}"></span><span th:text="${loan.book.title}"></span><span th:text="${#dates.format(loan.startingDate, 'yyyy-mm-dd')}"></span></li><!-- format thymel. ${#dates.format( field )} -->
 </ul>
 <br/>
 <!-- <span th:text="${message}" id="message">Message</span> -->

@@ -14,7 +14,8 @@
 <tr th:each="book : ${books}"><td th:text="${book.title}"></td>
 <td th:text="${book.isbn}"></td>
 <td th:text="${book.author}"></td>
-<td th:text="${book.genre.name}"></td>
+<td th:if="${book.genre != null}" th:text="${book.genre.name}"></td>
+<td th:if="${book.genre == null}" th:text="${'-'}"></td>
 <td th:text="${book.location.name}"></td>
 <td><a th:href="@{'/books/editBook/'+${book.id}}"><img th:src="@{/img/pen.png}" alt="edit" /></a></td>
 <td><a href="#" th:id="${book.id}" onClick="sendFormX(this.id);"><img th:src="@{/img/X.png}" alt="delete" /></a></td></tr>
