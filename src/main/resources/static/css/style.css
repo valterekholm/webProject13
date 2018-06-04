@@ -108,3 +108,14 @@ form input[type=text]{
 form input[type=submit], form input[type=reset]{
 		font-size: 1.09em;
 }
+
+table.front,table.front th, table.front td{
+	border: 1px solid #333;
+	padding:3px;
+}  
+
+table.front{
+	cell-border: 1px solid #333;
+	cellspacing: 2px;
+	border-collapse: collapse;
+}

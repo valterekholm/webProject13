@@ -46,7 +46,7 @@ public class Application {
 
 		return (args) -> {
 
-			Book a = new Book("1234567", "En låtsasbok");
+			Book a = new Book("1234567", "En låtsasbok","Soren Jobo");
 			Book b = new Book("1234568", "En fejkbok");
 			Book c = new Book("1234569", "En icke-bok");
 

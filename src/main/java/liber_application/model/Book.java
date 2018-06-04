@@ -23,6 +23,7 @@ public class Book {
 	@NotNull
 	@Size(min=2, max=50)
 	private String title;
+	private String author;
 	@ManyToOne
 	private Genre genre;
 	
@@ -50,7 +51,22 @@ public class Book {
 		this.genre = genre;
 	}
 	
+	public Book(String isbn, String title, String author) {
+		super();
+		this.isbn = isbn;
+		this.title = title;
+		this.author = author;
+	}
+	
 	public Book(String isbn, String title, Genre genre, Location location) {
+		super();
+		this.isbn = isbn;
+		this.title = title;
+		this.genre = genre;
+		this.location = location;
+	}
+	
+	public Book(String isbn, String title, Genre genre, String author, Location location) {
 		super();
 		this.isbn = isbn;
 		this.title = title;
@@ -80,6 +96,14 @@ public class Book {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	public Genre getGenre() {
