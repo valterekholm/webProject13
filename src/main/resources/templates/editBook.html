@@ -1,15 +1,17 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="header :: headerFragment">
-<title id="pageTitle">Save book data</title>
+<title id="pageTitle">Edit book</title>
 </head>
 <body>
 <div th:replace="header :: header"></div>
 <main>
-<h1>Save book data</h1>
-<form action="#" th:action="@{/books/addBook}" th:object="${book}" method="post">
+<h1>Edit book</h1>
+<form action="#" th:action="@{/books/editBook}" th:object="${book}" method="post">
+<input type="text" th:field="*{id}" />
 <p><label for="title">Title:</label><input type="text" th:field="*{title}" /></p>
 <p><label for="isbn">ISBN:</label><input type="text" th:field="*{isbn}" /></p>
+<p><label for="author">Author:</label><input type="text" th:field="*{author}" /></p>
 <p><label for="genre">Genre:</label><select th:field="*{genre.name}">
 <option value="null">No genre</option>
 <option th:each="genre : ${genres}" th:value="${genre.name}" th:text="${genre.name}"></option>
@@ -17,9 +19,8 @@
 <p><label for="location">Location:</label><select th:field="*{location.name}">
 <option th:each="location : ${locations}" th:value="${location.name}" th:text="${location.name}" th:title="${location.description}"></option>
 </select></p>
-<p><label></label><input type="submit" value="Add" /> </p>
+<p><label></label><input type="submit" value="Update" /> </p>
 </form>
-<br/>
 <span th:text="${message}" id="message">Message</span>
 </main>
 </body>

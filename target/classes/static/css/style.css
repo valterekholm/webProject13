@@ -17,7 +17,7 @@ a:link {
 
 /* visited link */
 a:visited {
-    color: #665555;
+    color: #884455;
 }
 
 /* mouse over link */
@@ -90,32 +90,48 @@ form{
 }
 
 form label{
-	min-width: 100px;
-	max-width: 200px;
+	min-width: 140px;
+	max-width: 240px;
 	text-align: right;
 	margin-right: 10px;
 	display: inline-block;
 }
 
-form input{
+form input, form select{
 	font-size: 1.15em;
+	padding: 3px;
 }
 
 form input[type=text]{
 	letter-spacing:4px;
 }
 
-form input[type=submit], form input[type=reset]{
-		font-size: 1.09em;
+form input[type=submit], form input[type=reset], form button{
+	font-size: 1.09em;
+	padding: 6px;
+}
+
+form input[type=submit]:hover, form input[type=reset]:hover, form button:hover{
+	border-color: black;
+	cursor: pointer;
 }
 
 table.front,table.front th, table.front td{
 	border: 1px solid #333;
-	padding:3px;
+	padding: 6px 9px;
 }  
 
 table.front{
 	cell-border: 1px solid #333;
 	cellspacing: 2px;
 	border-collapse: collapse;
+	background-color: rgba(255,255,255,.7);
+}
+
+.hidden{
+	display: none;
+}
+span#message{
+	display: block;
+	margin: 20px auto;
 }
