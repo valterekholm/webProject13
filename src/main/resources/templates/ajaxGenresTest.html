@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: headerFragment">
+<title id="pageTitle">Ajax Genres Test</title>
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<main>
+<h1>Ajax Genres Test</h1>
+<button onClick="getGenresAjax()">Get</button>
+<p><label for="genre">Genre:</label><select id="genres"></select></p>
+<span th:text="${message}" id="message">Message</span>
+</main>
+
+<script>
+
+function getGenresAjax(){
+
+	var sel = document.getElementById("genre");
+
+	insertAfter(sel, this);
+
+	$.getJSON("/rest/genres/allJson", function(data){
+
+		$('#genres').text('');
+		for(var index in data){
+			$('#genres').append('<option>'+data[index].title+'</option>')
+			}
+		
+	});
+}
+
+</script>
+</body>
+</html>

@@ -128,6 +128,11 @@ public class BookWebController {
 		
 		b = bookRepo.save(b);
 		
+		m.addAttribute("genres", genresRepo.findAll());
+		m.addAttribute("locations", locationsRepo.findAll());
+		m.addAttribute("books", bookRepo.findAll());
+		m.addAttribute("message", "Book saved: " + bookRepresentation.getTitle());
+		
 		return "addbook2";
 	}
 	
@@ -168,16 +173,18 @@ public class BookWebController {
 	
 	@GetMapping("/editBook/{id}")
 	public String editBook2(@PathVariable Integer id, Model m) {
-		System.out.println("editBook with id " + id);
-		Optional<Book> bookToEdit = bookRepo.findById(id);
+		System.out.println("editBook with id 1");
+		Optional<Book> bookToEdit = bookRepo.findById(1);
 		
 		if(bookToEdit.isPresent()) {
+			BookRepresentation book = new BookRepresentation(bookToEdit.get());
 			System.out.println("isPresent");
 			//go to edit form
-			m.addAttribute("book", bookToEdit.get());
+			//m.addAttribute("book", bookToEdit.get());
+			m.addAttribute("book", book);
 			m.addAttribute("genres", genresRepo.findAll());
 			m.addAttribute("locations", locationsRepo.findAll());
-			m.addAttribute("message", "Could find book");
+			m.addAttribute("message", "Found book");
 			return "editbook2";
 		}
 		
@@ -190,13 +197,61 @@ public class BookWebController {
 	}
 	
 	@PostMapping("/editBook")
-	public String updateBook2(Book book, Model m) {
+	public String updateBook2(BookRepresentation bookRepresentation, Model m) {
 		
-		Book updatedBook = bookRepo.save(book);
-		m.addAttribute("message", "Updated book: " + updatedBook.getTitle());
+		System.out.println("updateBook2 with " + bookRepresentation);
+		
+		Book b = new Book();
+		
+		m.addAttribute("book", new BookRepresentation());
+		
+		//null fields...
+		
+		boolean accepted = true;
+		
+		if(bookRepresentation.getGenre()!=null) { //so genre can be null
+			String genre = bookRepresentation.getGenre();
+			//book.setGenre(new Genre(bookRepresentation.getGenre()));
+			//load from database
+			if(genresRepo.getByName(genre)!=null) {
+				//Genre Exists
+				b.setGenre(genresRepo.getByName(genre));
+			}
+			else {
+				System.out.println("Genre not found, " + genre);
+				accepted = false;
+				//responseHeaders.add("Genre not found", genre);
+				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
+		
+		if(bookRepresentation.getLocation()!=null) {
+
+			String location = bookRepresentation.getLocation();
+			if(locationsRepo.getByName(location)!=null) {
+				b.setLocation(locationsRepo.getByName(location));
+			}
+			else {
+				accepted = false;
+				System.out.println("Location not found");
+				//responseHeaders.add("Location not found", location);
+				//return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
+		
+		if(!accepted) {
+			m.addAttribute("message", "Could not save book: " + bookRepresentation.getTitle());
+			return "editbook2";
+		}
+		
+		b.setTitle(bookRepresentation.getTitle());
+		b.setIsbn(bookRepresentation.getIsbn());
+		
+		b = bookRepo.save(b);
+		
 		
 		m.addAttribute("books", bookRepo.findAll());
-		
+		m.addAttribute("message", "Book updated: " + bookRepresentation.getTitle());
 		
 		return "listbooks";
 	}

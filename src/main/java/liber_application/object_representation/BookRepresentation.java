@@ -22,6 +22,7 @@ public class BookRepresentation {
 	private String title;
 	private String genre; //Corresponds Genre.name
 	private String location; //Corresponds Location.name
+	private String author;
 	
 	public BookRepresentation() {
 		super();
@@ -33,6 +34,14 @@ public class BookRepresentation {
 		this.title = title;
 		this.genre = genre;
 		this.location = location;
+	}
+	
+	public BookRepresentation(Book book) {
+		isbn = book.getIsbn();
+		title = book.getTitle();
+		author = book.getAuthor();
+		genre = book.getGenre().getName();
+		location = book.getLocation().getName();
 	}
 
 	public String getIsbn() {
@@ -68,6 +77,15 @@ public class BookRepresentation {
 	}
 	
 	
+	
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
 	public Book makeBookObject() {
 		Book b;
 		Genre g = genre!=null?new Genre(genre):null;

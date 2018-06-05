@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -48,6 +49,13 @@ public class GenreController {
 	public GenreCollection getGenresCollection() {
 		// This returns a JSON or XML with the books
 		return new GenreCollection((List<Genre>) genreRepo.findAll());
+	}
+	
+	@GetMapping(path="/allJson")
+	@ResponseBody //only json
+	public List<Genre> getGenres() {
+		// This returns a JSON or XML with the books
+		return (List<Genre>) genreRepo.findAll();
 	}
 	
 	/**

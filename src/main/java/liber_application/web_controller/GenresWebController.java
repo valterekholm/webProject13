@@ -37,5 +37,11 @@ public class GenresWebController {
 		m.addAttribute("message", "Saved genre: " + savedG.getName());
 		return "addgenre";
 	}
+	
+	@GetMapping("/testAjax")
+	public String getAll(Model m) {
+		m.addAttribute("genres", genresRepo.findAll());
+		return "ajaxgenrestest";
+	}
 
 }
