@@ -173,8 +173,8 @@ public class BookWebController {
 	
 	@GetMapping("/editBook/{id}")
 	public String editBook2(@PathVariable Integer id, Model m) {
-		System.out.println("editBook with id 1");
-		Optional<Book> bookToEdit = bookRepo.findById(1);
+		System.out.println("editBook2 with id " + id);
+		Optional<Book> bookToEdit = bookRepo.findById(id);
 		
 		if(bookToEdit.isPresent()) {
 			BookRepresentation book = new BookRepresentation(bookToEdit.get());
@@ -183,6 +183,7 @@ public class BookWebController {
 			//m.addAttribute("book", bookToEdit.get());
 			m.addAttribute("book", book);
 			m.addAttribute("genres", genresRepo.findAll());
+			m.addAttribute("genre_", book.getGenre());
 			m.addAttribute("locations", locationsRepo.findAll());
 			m.addAttribute("message", "Found book");
 			return "editbook2";

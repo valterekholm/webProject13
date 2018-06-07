@@ -8,7 +8,7 @@
 	<main>
 	<h1>Save book data</h1>
 	<form action="#" th:action="@{/books/addBook}" th:object="${book}"
-		method="post">
+		method="post" id="addBookForm">
 		<p>
 			<label for="title">Title:</label><input type="text"
 				th:field="*{title}" />
@@ -20,10 +20,11 @@
 			<label for="genre">Genre:</label><select th:field="*{genre}">
 				<option th:each="genre : ${genres}" th:value="${genre.name}"
 					th:text="${genre.name}"></option>
-			</select><span
+			</select><!--span
 				onClick="removeFieldById('genre');this.onclick='removeOnClick(event)'"
 				class="spanButton" id="makeNoGenre" style="cursor: pointer">No
-				genre</span>
+				genre</span -->
+				<label for="noGenre">No genre</label><input type="checkbox" name="noGenre" id="noGenre" />
 		</p>
 		<p>
 			<label for="location">Location:</label><select th:field="*{location}">
@@ -39,11 +40,6 @@
 	<br />
 	<span th:text="${message}" id="message">Message</span> </main>
 	<script>
-
-function removeFieldById(id){
-	var field = document.getElementById(id);
-	field.parentNode.removeChild(field);
-}
 
 function removeOnClick(event) {
 	removeFieldById('genre');
@@ -86,11 +82,44 @@ function offerGenres(previousSiblingId){
 	});
 }
 
-
-function insertAfter(newNode, referenceNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+window.onload=function(){
+	applyNoGenres("addBookForm");
 }
 
+function applyNoGenres(formId){
+
+	if(!document.getElementById(formId)){
+		alert("applyNoGenres could not find form of id " + formId);
+		return false;
+		}
+
+	var form = document.getElementById(formId);
+
+	if(form.querySelector("#noGenre")){
+		//switch for have genre found
+		var checkb = form.querySelector("#noGenre");
+		checkb.addEventListener("click", function(){toggleGenre(this.checked)});
+		form.addEventListener("submit", function(){removeFieldById('genre')}, true);				
+		}
+	else{
+		alert("function applyNoGenres could not find the noGenre switch");
+		return false;
+		}
+}
+
+function toggleGenre(isChecked){
+	if(!document.getElementById("genre")){
+		console.log("toggleGenre could not find element by id 'genre'");
+		return false;
+		}
+	if(isChecked){
+		document.getElementById("genre").disabled = true;
+		}
+	else{
+		console.log("No");
+		document.getElementById("genre").disabled = false;
+		}
+}
 
 </script>
 </body>

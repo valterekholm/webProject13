@@ -50,7 +50,7 @@ public class Application {
 			Book b = new Book("1234568", "En fejkbok");
 			Book c = new Book("1234569", "En icke-bok");
 
-			Genre genre0 = new Genre("Ingen");
+			//Genre genre0 = new Genre("Ingen");
 			Genre genre1 = new Genre("Låtsasböcker");
 			Genre genre2 = new Genre("IT");
 
@@ -58,7 +58,7 @@ public class Application {
 
 			User u1 = new User("Valter","valterekholm1@gmail.com");
 			
-			genreRepo.save(genre0);
+			//genreRepo.save(genre0);
 			genreRepo.save(genre1);
 			genreRepo.save(genre2);
 			locationRepo.save(shelf1);
