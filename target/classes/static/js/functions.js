@@ -49,7 +49,7 @@ function applyNoGenres(formId){
 		//switch for have genre found
 		
 		checkb.addEventListener("click", function(){toggleGenre(this.checked)});
-		form.addEventListener("submit", function(){removeFieldById('genre')}, true);				
+		form.addEventListener("submit", function(){if(noGenreChecked())removeFieldById('genre')}, true);				
 		}
 	else{
 		alert("function applyNoGenres could not find the noGenre switch");
@@ -69,4 +69,12 @@ function toggleGenre(isChecked){
 		console.log("No");
 		document.getElementById("genre").disabled = false;
 		}
+}
+
+function noGenreChecked(){
+	if(form.querySelector("#noGenre")){
+		var checkb = form.querySelector("#noGenre");
+		return checkb.checked;
+	}
+	return false;
 }

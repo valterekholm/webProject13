@@ -27,7 +27,7 @@ public class Book {
 	@Size(min=2, max=50)
 	private String title;
 	private String author;
-	@ManyToOne(optional = true, fetch = FetchType.LAZY)//test med optional
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)//test med optional, test med fetch lazy för att tillåta null genre
 	//@JoinColumn(name = "genreid", nullable = true)
 	private Genre genre;
 	
@@ -75,6 +75,7 @@ public class Book {
 		this.isbn = isbn;
 		this.title = title;
 		this.genre = genre;
+		this.author = author;
 		this.location = location;
 	}
 
