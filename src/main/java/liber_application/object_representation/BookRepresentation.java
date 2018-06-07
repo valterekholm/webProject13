@@ -36,12 +36,22 @@ public class BookRepresentation {
 		this.location = location;
 	}
 	
+	public BookRepresentation(String isbn, String title, String author, String genre, String location) {
+		super();
+		this.isbn = isbn;
+		this.title = title;
+		this.author = author;
+		this.genre = genre;
+		this.location = location;
+	}
+	
 	public BookRepresentation(Book book) {
+		System.out.println("new BookRepresentation by Book");
 		isbn = book.getIsbn();
 		title = book.getTitle();
 		author = book.getAuthor();
-		genre = book.getGenre().getName();
-		location = book.getLocation().getName();
+		genre = book.getGenre()!=null?book.getGenre().getName():null;
+		location = book.getLocation()!=null?book.getLocation().getName():null;
 	}
 
 	public String getIsbn() {
@@ -95,10 +105,11 @@ public class BookRepresentation {
 
 		return b;
 	}
-	
-	
+
+	@Override
 	public String toString() {
-		return "BookRepr. title:"+getTitle()+",isbn:"+getIsbn()+",genre:"+getGenre()+",location:"+getLocation();
+		return "BookRepresentation [isbn=" + isbn + ", title=" + title + ", genre=" + genre + ", location=" + location
+				+ ", author=" + author + "]";
 	}
 		
 }

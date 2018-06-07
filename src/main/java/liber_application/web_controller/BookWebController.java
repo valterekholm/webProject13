@@ -124,6 +124,7 @@ public class BookWebController {
 		}
 		
 		b.setTitle(bookRepresentation.getTitle());
+		b.setAuthor(bookRepresentation.getAuthor());
 		b.setIsbn(bookRepresentation.getIsbn());
 		
 		b = bookRepo.save(b);
@@ -175,8 +176,10 @@ public class BookWebController {
 	public String editBook2(@PathVariable Integer id, Model m) {
 		System.out.println("editBook2 with id " + id);
 		Optional<Book> bookToEdit = bookRepo.findById(id);
+		System.out.println("Found book: " + bookToEdit.isPresent());
 		
 		if(bookToEdit.isPresent()) {
+			System.out.println(bookToEdit.get().getTitle());
 			BookRepresentation book = new BookRepresentation(bookToEdit.get());
 			System.out.println("isPresent");
 			//go to edit form
@@ -246,6 +249,7 @@ public class BookWebController {
 		}
 		
 		b.setTitle(bookRepresentation.getTitle());
+		b.setAuthor(bookRepresentation.getAuthor());
 		b.setIsbn(bookRepresentation.getIsbn());
 		
 		b = bookRepo.save(b);

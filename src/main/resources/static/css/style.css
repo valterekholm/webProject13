@@ -113,8 +113,8 @@ form input, form select{
 	padding: 3px;
 }
 
-form input[type="select"]:disabled {
-    color: #ccc;
+form input[type="select"]:disabled, form option:disabled {
+    color: #ddd;
 }
 
 form input[type=text]{

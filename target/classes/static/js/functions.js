@@ -26,3 +26,47 @@ function removeFieldById(id){
 	var field = document.getElementById(id);
 	field.parentNode.removeChild(field);
 }
+
+//used for addBook2.html and editBook2.html
+function applyNoGenres(formId){
+
+	if(!document.getElementById(formId)){
+		alert("applyNoGenres could not find form of id " + formId);
+		return false;
+		}
+
+	var form = document.getElementById(formId);
+
+	if(form.querySelector("#noGenre")){
+		var checkb = form.querySelector("#noGenre");
+		//on edit page
+		if(checkb.checked){
+			if(document.getElementById("genre")){
+				document.getElementById("genre").disabled = true;
+			}
+		}
+		
+		//switch for have genre found
+		
+		checkb.addEventListener("click", function(){toggleGenre(this.checked)});
+		form.addEventListener("submit", function(){removeFieldById('genre')}, true);				
+		}
+	else{
+		alert("function applyNoGenres could not find the noGenre switch");
+		return false;
+		}
+}
+
+function toggleGenre(isChecked){
+	if(!document.getElementById("genre")){
+		console.log("toggleGenre could not find element by id 'genre'");
+		return false;
+		}
+	if(isChecked){
+		document.getElementById("genre").disabled = true;
+		}
+	else{
+		console.log("No");
+		document.getElementById("genre").disabled = false;
+		}
+}
