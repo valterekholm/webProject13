@@ -1,6 +1,7 @@
 package liber_application.web_controller;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import liber_application.model.Book;
 import liber_application.model.BookLoan;
 import liber_application.object_representation.BookLoanRepresentation;
 import liber_application.object_representation.BookNotFoundException;
+import liber_application.object_representation.LoanNotFoundException;
 import liber_application.object_representation.UserNotFoundException;
 
 @Controller
@@ -69,5 +71,38 @@ public class LoansWebController {
 		BookLoan savedBL = loansRepo.save(loan);//bl
 		m.addAttribute("message", "Saved loan: " + savedBL.getId());
 		return "addloan";
+	}
+	
+	@GetMapping("/endLoan")
+	public String endLoan(Integer id, Model m) throws LoanNotFoundException {
+		Optional<BookLoan> bl = loansRepo.findById(id);
+		
+		if(bl.isPresent()) {
+			BookLoan loan = bl.get();
+			loan.makeEndedNow();
+			loan = loansRepo.save(loan);
+			m.addAttribute("message", "Loan has ended");
+			return "messagepage";
+		}
+		else {
+			throw new LoanNotFoundException();
+		}
+	}
+	
+	//TODO : /loans/deleteLoan
+	@GetMapping("/deleteLoan")
+	public String deleteBook(Integer id, Model m) {
+		Optional<BookLoan> awayLoan = loansRepo.findById(id);
+		
+		if(awayLoan.isPresent()) {
+			loansRepo.delete(awayLoan.get());
+			m.addAttribute("loans", loansRepo.findAll());
+			m.addAttribute("message", "Loan deleted: " + awayLoan.get().getId());
+		}
+		
+		else {
+			m.addAttribute("message", "Could not find loan by id: " + id);
+		}
+		return "listloans";
 	}
 }

@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: headerFragment">
+<title id="pageTitle">Message page</title>
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<main>
+<h1>Message</h1>
+<span th:text="${message}" id="message">Message</span>
+</main>
+</body>
+</html>

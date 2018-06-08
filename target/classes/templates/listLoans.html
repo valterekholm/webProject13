@@ -7,11 +7,24 @@
 <div th:replace="header :: header"></div>
 <main>
 <h1>All loans</h1>
-<ul th:each="loan : ${loans}" class="loanList">
+<ul th:each="loan : ${loans}" class="loanList"><!-- todo: formatera datum -månad -->
 <li><span th:text="${loan.reader.name}"></span><span th:text="${loan.book.isbn}"></span><span th:text="${loan.book.title}"></span><span th:text="${#dates.format(loan.startingDate, 'yyyy-mm-dd')}"></span></li><!-- format thymel. ${#dates.format( field )} -->
 </ul>
+<table class="front">
+<tr><th>Reader name</th><th>Book ISBN</th><th>Book title</th><th>Start date</th><th>End</th><th>Delete</th></tr>
+<tr th:each="loan : ${loans}">
+<td th:text="${loan.reader.name}"></td>
+<td th:text="${loan.book.isbn}"></td>
+<td th:text="${loan.book.title}"></td>
+<td th:text="${#dates.format(loan.startingDate, 'yyyy-MM-dd')}"></td>
+<td><a th:href="@{'/loans/endLoan/'+${loan.id}}"><img th:src="@{/img/pen.png}" alt="end loan" /></a></td>
+<td><a href="#" th:id="${loan.id}" onClick="sendFormX(this.id);"><img th:src="@{/img/X.png}" alt="delete" /></a></td></tr>
+</table>
 <br/>
-<!-- <span th:text="${message}" id="message">Message</span> -->
+<span th:text="${message}" id="message"></span>
+<form name="myform" th:action="@{/loans/deleteLoan}" method="post" class="hidden">
+  <input type="hidden" name="id" id="id"/>
+</form>
 </main>
 </body>
 </html>

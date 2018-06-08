@@ -78,3 +78,13 @@ function noGenreChecked(){
 	}
 	return false;
 }
+
+/*Sends a form for deleting ... this needs a form in document
+ * <form name="myform" th:action="@{/books/deleteBook}" method="post" class="hidden">
+  <input type="hidden" name="id" id="id"/>
+</form>
+*/
+function sendFormX(id){
+	document.querySelector("form[name='myform']  > input").value = id;
+	document.querySelector("form[name='myform']").submit();
+}
